@@ -30,7 +30,7 @@ func (c *Client) Do(r *http.Request) (http.Response, error) {
 }
 
 func (c *Client) dialForRequest(r *http.Request) (net.Conn, error) {
-	addr, err := r.Address()
+	addr, err := r.Addr.Compensate()
 	if err != nil {
 		return nil, err
 	}

@@ -17,7 +17,7 @@ type FileServer struct {
 }
 
 func (s *FileServer) Handle(w io.Writer, r *http0_9.Request) {
-	f, err := s.Root.Open(r.URI)
+	f, err := s.Root.Open(string(r.Addr))
 	if err != nil {
 		w.Write([]byte("not found"))
 		return
