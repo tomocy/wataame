@@ -3,11 +3,22 @@ package http
 import (
 	"errors"
 	"fmt"
+	"io"
 	"strings"
 )
 
 type Request struct {
 	URI string
+}
+
+func (r *Request) Write(dst io.Writer) error {
+	addr, err := r.Address()
+	if err != nil {
+		return err
+	}
+
+	_, err = fmt.Fprintf(dst, "GET %s\n", addr)
+	return err
 }
 
 func (r *Request) Address() (string, error) {
