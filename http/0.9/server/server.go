@@ -8,7 +8,7 @@ import (
 )
 
 type Server struct {
-	Addr    string
+	Addr    http.Address
 	Handler Handler
 }
 
