@@ -1,3 +1,5 @@
 package server
 
-type Server struct{}
+type Server struct {
+	Addr string
+}
