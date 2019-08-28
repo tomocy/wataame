@@ -12,13 +12,13 @@ import (
 func TestClient_Do(t *testing.T) {
 	l, err := nettest.NewLocalListener("tcp")
 	if err != nil {
-		t.Fatalf("failed to generate new local listener: %s\n", err)
+		t.Fatalf("unexpected error from nettest.NewLocalListener: got %s, expect nil\n", err)
 	}
 	defer l.Close()
 	go func() {
 		conn, err := l.Accept()
 		if err != nil {
-			t.Fatalf("failed for listener to accept: %s\n", err)
+			t.Fatalf("unexpected error from (*Listener).Accept: %s\n", err)
 		}
 		defer conn.Close()
 
@@ -33,11 +33,11 @@ func TestClient_Do(t *testing.T) {
 		URI: addr,
 	})
 	if err != nil {
-		t.Fatalf("failed for client to do: %s\n", err)
+		t.Fatalf("unexpected error from (*Client).Do: %s\n", err)
 	}
 	actual := string(resp)
 
 	if actual != expected {
-		t.Errorf("unexpected response: got %s, expect %s\n", actual, expected)
+		t.Errorf("unexpected response from (*Client).Do: got %s, expect %s\n", actual, expected)
 	}
 }
