@@ -12,7 +12,7 @@ import (
 )
 
 type Server struct {
-	Addr    http.Address
+	Addr    string
 	Handler Handler
 }
 
@@ -27,7 +27,7 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) listen() (net.Listener, error) {
-	compensated, err := s.Addr.Compensate()
+	compensated, err := http.Address(s.Addr).Compensate()
 	if err != nil {
 		return nil, err
 	}

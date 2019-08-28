@@ -14,7 +14,7 @@ import (
 func TestServer_ListenAndServe(t *testing.T) {
 	addr := "localhost:12345"
 	s := &Server{
-		Addr: http.Address(addr), Handler: &FileServer{
+		Addr: addr, Handler: &FileServer{
 			Root: http.Dir(filepath.Join(os.Getenv("GOPATH"), "src/github.com/tomocy/wataame/testdata")),
 		},
 	}
