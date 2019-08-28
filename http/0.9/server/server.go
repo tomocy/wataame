@@ -16,6 +16,15 @@ type Server struct {
 	Handler Handler
 }
 
+func (s *Server) listen() (net.Listener, error) {
+	compensated, err := s.Addr.Compensate()
+	if err != nil {
+		return nil, err
+	}
+
+	return net.Listen("tcp", compensated)
+}
+
 func (s *Server) Serve(l net.Listener) error {
 	for {
 		conn, err := l.Accept()
