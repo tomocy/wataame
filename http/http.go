@@ -1,24 +1,20 @@
 package http
 
 import (
-	"fmt"
-	"net"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Address string
 
 func (a Address) Compensate() (string, error) {
-	host, port, err := net.SplitHostPort(string(a))
-	if err != nil {
-		return "", err
-	}
-	if port == "" {
-		port = "80"
+	splited := strings.Split(string(a), ":")
+	if len(splited) < 2 {
+		return splited[0] + ":80", nil
 	}
 
-	return fmt.Sprintf("%s:%s", host, port), nil
+	return strings.Join(splited[:2], ":"), nil
 }
 
 type Dir string
