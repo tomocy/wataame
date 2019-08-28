@@ -1,7 +1,11 @@
 package server
 
 import (
+	"errors"
 	"io"
+	"net"
+	"net/url"
+	"strings"
 
 	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -10,6 +14,35 @@ import (
 type Server struct {
 	Addr    http.Address
 	Handler Handler
+}
+
+func readRequest(conn net.Conn) (*http0_9.Request, error) {
+	r := make([]byte, 1024)
+	n, err := conn.Read(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseRequest(r[:n])
+}
+
+func parseRequest(bs []byte) (*http0_9.Request, error) {
+	splited := strings.Split(string(bs), "\n")
+	if len(splited) < 2 {
+		return nil, errors.New("invalid format of request: finishing without a new line")
+	}
+	splited = strings.Split(splited[0], " ")
+	if len(splited) < 2 {
+		return nil, errors.New("invalid format of request: missing space between method and uri")
+	}
+	uri, err := url.Parse("http://" + splited[1])
+	if err != nil {
+		return nil, err
+	}
+
+	return &http0_9.Request{
+		URI: uri,
+	}, nil
 }
 
 type FileServer struct {
@@ -27,6 +60,10 @@ func (s *FileServer) Handle(w io.Writer, r *http0_9.Request) {
 	stat, err := f.Stat()
 	if err != nil {
 		w.Write([]byte("interanl server error"))
+		return
+	}
+	if stat.IsDir() {
+		w.Write([]byte("not found"))
 		return
 	}
 
