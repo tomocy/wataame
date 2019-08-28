@@ -16,6 +16,25 @@ type Server struct {
 	Handler Handler
 }
 
+func (s *Server) Serve(l net.Listener) error {
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			return err
+		}
+		go func() {
+			defer conn.Close()
+			r, err := readRequest(conn)
+			if err != nil {
+				conn.Write([]byte(err.Error()))
+				return
+			}
+
+			s.Handler.Handle(conn, r)
+		}()
+	}
+}
+
 func readRequest(conn net.Conn) (*http0_9.Request, error) {
 	r := make([]byte, 1024)
 	n, err := conn.Read(r)
