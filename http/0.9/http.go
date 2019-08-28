@@ -10,6 +10,10 @@ type Request struct {
 	URI string
 }
 
+func (r *Request) Address() (string, error) {
+	return compensateAddress(r.URI)
+}
+
 func compensateAddress(uri string) (string, error) {
 	host, port, err := splitHostPort(uri)
 	if err != nil {
