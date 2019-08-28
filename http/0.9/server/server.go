@@ -7,7 +7,8 @@ import (
 )
 
 type Server struct {
-	Addr string
+	Addr    string
+	Handler Handler
 }
 
 type Handler interface {
