@@ -3,7 +3,8 @@ package server
 import (
 	"io"
 
-	http "github.com/tomocy/wataame/http/0.9"
+	http "github.com/tomocy/wataame/http"
+	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
 
 type Server struct {
@@ -11,6 +12,10 @@ type Server struct {
 	Handler Handler
 }
 
+type FileServer struct {
+	Root http.FileSystem
+}
+
 type Handler interface {
-	Handle(io.Writer, *http.Request)
+	Handle(io.Writer, *http0_9.Request)
 }
