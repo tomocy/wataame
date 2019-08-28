@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 )
 
+type Address string
+
 type Dir string
 
 func (d Dir) Open(name string) (*os.File, error) {
