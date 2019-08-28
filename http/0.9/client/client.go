@@ -3,14 +3,15 @@ package client
 import (
 	"net"
 
-	http "github.com/tomocy/wataame/http/0.9"
+	http "github.com/tomocy/wataame/http"
+	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
 
 type Client struct {
 	Dialer Dialer
 }
 
-func (c *Client) Do(r *http.Request) (http.Response, error) {
+func (c *Client) Do(r *http0_9.Request) (http0_9.Response, error) {
 	conn, err := c.dialForRequest(r)
 	if err != nil {
 		return nil, err
@@ -20,7 +21,7 @@ func (c *Client) Do(r *http.Request) (http.Response, error) {
 	if err := r.Write(conn); err != nil {
 		return nil, err
 	}
-	resp := make(http.Response, 1024)
+	resp := make(http0_9.Response, 1024)
 	n, err := conn.Read(resp)
 	if err != nil {
 		return nil, err
@@ -29,8 +30,8 @@ func (c *Client) Do(r *http.Request) (http.Response, error) {
 	return resp[:n], nil
 }
 
-func (c *Client) dialForRequest(r *http.Request) (net.Conn, error) {
-	addr, err := r.Addr.Compensate()
+func (c *Client) dialForRequest(r *http0_9.Request) (net.Conn, error) {
+	addr, err := http.Address(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, err
 	}

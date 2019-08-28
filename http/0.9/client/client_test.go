@@ -3,9 +3,9 @@ package client
 import (
 	"fmt"
 	"io"
+	"net/url"
 	"testing"
 
-	"github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"golang.org/x/net/nettest"
 )
@@ -30,8 +30,9 @@ func TestClient_Do(t *testing.T) {
 	expected := fmt.Sprintf("GET %s\n", addr)
 
 	var client Client
+	uri, _ := url.Parse("http://" + addr)
 	resp, err := client.Do(&http0_9.Request{
-		Addr: http.Address(addr),
+		URI: uri,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error from (*Client).Do: %s\n", err)

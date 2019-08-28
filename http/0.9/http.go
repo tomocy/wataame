@@ -3,16 +3,17 @@ package http
 import (
 	"fmt"
 	"io"
+	"net/url"
 
 	"github.com/tomocy/wataame/http"
 )
 
 type Request struct {
-	Addr http.Address
+	URI *url.URL
 }
 
 func (r *Request) Write(dst io.Writer) error {
-	addr, err := r.Addr.Compensate()
+	addr, err := http.Address(r.URI.Host).Compensate()
 	if err != nil {
 		return err
 	}
