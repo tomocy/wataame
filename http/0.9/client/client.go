@@ -10,6 +10,25 @@ type Client struct {
 	Dialer Dialer
 }
 
+func (c *Client) Do(r *http.Request) (http.Response, error) {
+	conn, err := c.dialForRequest(r)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	if err := r.Write(conn); err != nil {
+		return nil, err
+	}
+	resp := make(http.Response, 1024)
+	n, err := conn.Read(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp[:n], nil
+}
+
 func (c *Client) dialForRequest(r *http.Request) (net.Conn, error) {
 	addr, err := r.Address()
 	if err != nil {
