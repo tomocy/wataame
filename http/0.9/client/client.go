@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"net"
 
 	http "github.com/tomocy/wataame/http"
@@ -44,13 +45,17 @@ func (c *Client) dial(network, addr string) (net.Conn, error) {
 		d = new(DefaultDialer)
 	}
 
-	return d.Dial(network, addr)
+	return d.Dial(context.TODO(), network, addr)
 }
 
 type Dialer interface {
-	Dial(network, addr string) (net.Conn, error)
+	Dial(ctx context.Context, network, addr string) (net.Conn, error)
 }
 
 type DefaultDialer struct {
 	net.Dialer
+}
+
+func (d *DefaultDialer) Dial(ctx context.Context, network, addr string) (net.Conn, error) {
+	return d.Dialer.DialContext(ctx, network, addr)
 }
