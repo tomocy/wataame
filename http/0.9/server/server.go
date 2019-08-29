@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"io"
+	"log"
 	"net"
 	"net/url"
 	"strings"
@@ -48,6 +49,10 @@ func (s *Server) Serve(l net.Listener) error {
 				conn.Write([]byte(err.Error()))
 				return
 			}
+			log.Println(r)
+			if r.Method != "GET" {
+				conn.Write([]byte("method not allowed"))
+			}
 
 			s.Handler.Handle(conn, r)
 		}()
@@ -79,7 +84,8 @@ func parseRequest(bs []byte) (*http0_9.Request, error) {
 	}
 
 	return &http0_9.Request{
-		URI: uri,
+		Method: splited[0],
+		URI:    uri,
 	}, nil
 }
 

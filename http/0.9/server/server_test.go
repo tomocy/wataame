@@ -25,22 +25,29 @@ func TestServer_ListenAndServe(t *testing.T) {
 	}()
 
 	tests := map[string]struct {
-		uri      string
-		expected string
+		method, uri string
+		expected    string
 	}{
 		"ok": {
+			"GET",
 			"http://" + filepath.Join(addr, "/index.html"),
 			"<h1>Hello world</h1>",
 		},
 		"not found": {
+			"GET",
 			"http://" + filepath.Join(addr, "/"),
 			"not found",
+		},
+		"method not allowed": {
+			"HEAD",
+			"http://" + filepath.Join(addr, "/index.html"),
+			"method not allowed",
 		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			actual, err := receiveTestResponse("tcp", test.uri)
+			actual, err := receiveTestResponse("tcp", test.method, test.uri)
 			if err != nil {
 				t.Fatalf("unexpected error from receiveTestResponse: got %s, expect nil\n", err)
 			}
@@ -51,7 +58,7 @@ func TestServer_ListenAndServe(t *testing.T) {
 	}
 }
 
-func receiveTestResponse(network, uri string) (string, error) {
+func receiveTestResponse(network, method, uri string) (string, error) {
 	parsed, err := url.Parse(uri)
 	if err != nil {
 		return "", err
@@ -66,7 +73,7 @@ func receiveTestResponse(network, uri string) (string, error) {
 	}
 	defer conn.Close()
 
-	fmt.Fprintf(conn, "GET %s\n", filepath.Join(addr, parsed.Path))
+	fmt.Fprintf(conn, "%s %s\n", method, filepath.Join(addr, parsed.Path))
 	resp := make([]byte, 1024)
 	n, err := conn.Read(resp)
 	if err != nil {
