@@ -13,7 +13,7 @@ type Client struct {
 }
 
 func (c *Client) Do(r *http0_9.Request) (http0_9.Response, error) {
-	conn, err := c.dialForRequest(r)
+	conn, err := c.dialForRequest(context.TODO(), r)
 	if err != nil {
 		return nil, err
 	}
@@ -30,13 +30,13 @@ func (c *Client) Do(r *http0_9.Request) (http0_9.Response, error) {
 	return resp[:n], nil
 }
 
-func (c *Client) dialForRequest(r *http0_9.Request) (net.Conn, error) {
+func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (net.Conn, error) {
 	addr, err := http.Address(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, err
 	}
 
-	return c.dial(context.TODO(), "tcp", addr)
+	return c.dial(ctx, "tcp", addr)
 }
 
 func (c *Client) dial(ctx context.Context, network, addr string) (net.Conn, error) {
