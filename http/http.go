@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const MethodGet = "GET"
+
 type Address string
 
 func (a Address) Compensate() (string, error) {
