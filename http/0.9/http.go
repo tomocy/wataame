@@ -9,7 +9,8 @@ import (
 )
 
 type Request struct {
-	URI *url.URL
+	Method string
+	URI    *url.URL
 }
 
 func (r *Request) Write(dst io.Writer) error {
