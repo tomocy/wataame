@@ -50,3 +50,7 @@ func (c *Client) dial(network, addr string) (net.Conn, error) {
 type Dialer interface {
 	Dial(network, addr string) (net.Conn, error)
 }
+
+type DefaultDialer struct {
+	net.Dialer
+}
