@@ -16,7 +16,6 @@ func (c *Client) Do(r *http0_9.Request) (http0_9.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	if err := r.Write(conn); err != nil {
 		return nil, err
