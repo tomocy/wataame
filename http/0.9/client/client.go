@@ -36,16 +36,16 @@ func (c *Client) dialForRequest(r *http0_9.Request) (net.Conn, error) {
 		return nil, err
 	}
 
-	return c.dial("tcp", addr)
+	return c.dial(context.TODO(), "tcp", addr)
 }
 
-func (c *Client) dial(network, addr string) (net.Conn, error) {
+func (c *Client) dial(ctx context.Context, network, addr string) (net.Conn, error) {
 	d := c.Dialer
 	if d == nil {
 		d = new(DefaultDialer)
 	}
 
-	return d.Dial(context.TODO(), network, addr)
+	return d.Dial(ctx, network, addr)
 }
 
 type Dialer interface {
