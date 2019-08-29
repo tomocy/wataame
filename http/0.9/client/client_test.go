@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/url"
@@ -32,7 +33,7 @@ func TestClient_Do(t *testing.T) {
 
 	var client Client
 	uri, _ := url.Parse("http://" + addr)
-	resp, err := client.Do(&http0_9.Request{
+	resp, err := client.Do(context.Background(), &http0_9.Request{
 		URI: uri,
 	})
 	if err != nil {

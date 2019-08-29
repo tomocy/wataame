@@ -12,8 +12,8 @@ type Client struct {
 	Dialer Dialer
 }
 
-func (c *Client) Do(r *http0_9.Request) (http0_9.Response, error) {
-	conn, err := c.dialForRequest(context.TODO(), r)
+func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, error) {
+	conn, err := c.dialForRequest(ctx, r)
 	if err != nil {
 		return nil, err
 	}
