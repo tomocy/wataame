@@ -19,7 +19,7 @@ func (r *Request) Write(dst io.Writer) error {
 		return err
 	}
 
-	_, err = fmt.Fprintf(dst, "GET %s\n", addr)
+	_, err = fmt.Fprintf(dst, "%s %s\n", http.MethodGet, addr)
 	return err
 }
 

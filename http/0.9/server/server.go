@@ -50,7 +50,7 @@ func (s *Server) Serve(l net.Listener) error {
 				return
 			}
 			log.Println(r)
-			if r.Method != "GET" {
+			if r.Method != http.MethodGet {
 				conn.Write([]byte("method not allowed"))
 			}
 

@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"testing"
 
+	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"golang.org/x/net/nettest"
 )
@@ -27,7 +28,7 @@ func TestClient_Do(t *testing.T) {
 	}()
 
 	addr := l.Addr().String()
-	expected := fmt.Sprintf("GET %s\n", addr)
+	expected := fmt.Sprintf("%s %s\n", http.MethodGet, addr)
 
 	var client Client
 	uri, _ := url.Parse("http://" + addr)

@@ -29,12 +29,12 @@ func TestServer_ListenAndServe(t *testing.T) {
 		expected    string
 	}{
 		"ok": {
-			"GET",
+			http.MethodGet,
 			"http://" + filepath.Join(addr, "/index.html"),
 			"<h1>Hello world</h1>",
 		},
 		"not found": {
-			"GET",
+			http.MethodGet,
 			"http://" + filepath.Join(addr, "/"),
 			"not found",
 		},
