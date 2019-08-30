@@ -14,10 +14,10 @@ type Addr string
 
 func (a Addr) Compensate() (string, error) {
 	if strings.HasPrefix(string(a), "[") {
-		return ipv6Addr(a).compensate()
+		return a.compensateWith(ipv6Addr(a))
 	}
 
-	return ipv4Addr(a).compensate()
+	return a.compensateWith(ipv4Addr(a))
 }
 
 func (a Addr) compensateWith(c interface {
