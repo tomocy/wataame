@@ -14,6 +14,8 @@ func (a Addr) Compensate() (string, error) {
 	return ipv4Addr(a).compensate()
 }
 
+type ipv6Addr string
+
 type ipv4Addr string
 
 func (a ipv4Addr) compensate() (string, error) {
