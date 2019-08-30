@@ -21,6 +21,15 @@ func (a Addr) Compensate() (string, error) {
 
 type ipv4Addr string
 
+func (a ipv4Addr) compensate() (string, error) {
+	splited := strings.Split(string(a), ":")
+	if len(splited) < 2 {
+		return splited[0] + ":80", nil
+	}
+
+	return strings.Join(splited[:2], ":"), nil
+}
+
 type Dir string
 
 func (d Dir) Open(name string) (*os.File, error) {
