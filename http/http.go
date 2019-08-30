@@ -2,6 +2,7 @@ package http
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,6 +18,18 @@ func (a Addr) Compensate() (string, error) {
 	}
 
 	return ipv4Addr(a).compensate()
+}
+
+func (a Addr) compensateWith(c interface {
+	proto() string
+	compensate() (string, error)
+}) (string, error) {
+	addr, err := c.compensate()
+	if err != nil {
+		return "", fmt.Errorf("failed to compensate address for %s: %s", c.proto(), err)
+	}
+
+	return addr, nil
 }
 
 type ipv6Addr string
