@@ -7,13 +7,13 @@ func TestAddress_Compensate(t *testing.T) {
 		addr     Addr
 		expected string
 	}{
-		"with port": {
-			"localhost:12345",
-			"localhost:12345",
+		"ipv4 with port": {
+			"127.0.0.1:12345",
+			"127.0.0.1:12345",
 		},
-		"without port": {
-			"localhost",
-			"localhost:80",
+		"ipv4 without port": {
+			"127.0.0.1",
+			"127.0.0.1:80",
 		},
 	}
 
