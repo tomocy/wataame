@@ -12,6 +12,10 @@ const MethodGet = "GET"
 type Addr string
 
 func (a Addr) Compensate() (string, error) {
+	if strings.HasPrefix(string(a), "[") {
+		return ipv6Addr(a).compensate()
+	}
+
 	return ipv4Addr(a).compensate()
 }
 

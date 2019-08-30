@@ -15,6 +15,14 @@ func TestAddress_Compensate(t *testing.T) {
 			"127.0.0.1",
 			"127.0.0.1:80",
 		},
+		"ipv6 with port": {
+			"[::1]:12345",
+			"[::1]:12345",
+		},
+		"ipv6 without port": {
+			"[::1]",
+			"[::1]:80",
+		},
 	}
 
 	for name, test := range tests {
