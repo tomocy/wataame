@@ -11,12 +11,7 @@ const MethodGet = "GET"
 type Addr string
 
 func (a Addr) Compensate() (string, error) {
-	splited := strings.Split(string(a), ":")
-	if len(splited) < 2 {
-		return splited[0] + ":80", nil
-	}
-
-	return strings.Join(splited[:2], ":"), nil
+	return ipv4Addr(a).compensate()
 }
 
 type ipv4Addr string
