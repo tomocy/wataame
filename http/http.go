@@ -80,6 +80,10 @@ func (a ipv6Addr) parsePort(host string) (string, error) {
 
 type ipv4Addr string
 
+func (a ipv4Addr) proto() string {
+	return "IPv4"
+}
+
 func (a ipv4Addr) compensate() (string, error) {
 	splited := strings.Split(string(a), ":")
 	if len(splited) < 2 {
