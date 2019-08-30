@@ -21,6 +21,10 @@ func (a Addr) Compensate() (string, error) {
 
 type ipv6Addr string
 
+func (a ipv6Addr) proto() string {
+	return "IPv6"
+}
+
 func (a ipv6Addr) compensate() (string, error) {
 	host, port, err := a.parse()
 	if err != nil {
