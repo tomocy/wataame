@@ -31,7 +31,7 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 }
 
 func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (net.Conn, error) {
-	addr, err := http.Address(r.URI.Host).Compensate()
+	addr, err := http.Addr(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, err
 	}

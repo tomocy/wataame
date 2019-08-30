@@ -28,7 +28,7 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) listen() (net.Listener, error) {
-	compensated, err := http.Address(s.Addr).Compensate()
+	compensated, err := http.Addr(s.Addr).Compensate()
 	if err != nil {
 		return nil, err
 	}

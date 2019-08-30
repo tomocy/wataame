@@ -63,7 +63,7 @@ func receiveTestResponse(network, method, uri string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	addr, err := http.Address(parsed.Host).Compensate()
+	addr, err := http.Addr(parsed.Host).Compensate()
 	if err != nil {
 		return "", err
 	}

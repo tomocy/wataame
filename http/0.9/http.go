@@ -14,7 +14,7 @@ type Request struct {
 }
 
 func (r *Request) Write(dst io.Writer) error {
-	addr, err := http.Address(r.URI.Host).Compensate()
+	addr, err := http.Addr(r.URI.Host).Compensate()
 	if err != nil {
 		return err
 	}

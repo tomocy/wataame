@@ -4,7 +4,7 @@ import "testing"
 
 func TestAddress_Compensate(t *testing.T) {
 	tests := map[string]struct {
-		addr     Address
+		addr     Addr
 		expected string
 	}{
 		"with port": {

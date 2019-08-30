@@ -8,9 +8,9 @@ import (
 
 const MethodGet = "GET"
 
-type Address string
+type Addr string
 
-func (a Address) Compensate() (string, error) {
+func (a Addr) Compensate() (string, error) {
 	splited := strings.Split(string(a), ":")
 	if len(splited) < 2 {
 		return splited[0] + ":80", nil
