@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/url"
 	"os"
@@ -31,17 +32,17 @@ func TestServer_ListenAndServe(t *testing.T) {
 		"ok": {
 			http.MethodGet,
 			"http://" + filepath.Join(addr, "/index.html"),
-			"<h1>Hello world</h1>",
+			"<h1>Hello world</h1>\n",
 		},
 		"not found": {
 			http.MethodGet,
 			"http://" + filepath.Join(addr, "/"),
-			"not found",
+			"not found\n",
 		},
 		"method not allowed": {
 			"HEAD",
 			"http://" + filepath.Join(addr, "/index.html"),
-			"method not allowed",
+			"method not allowed\n",
 		},
 	}
 
@@ -52,7 +53,7 @@ func TestServer_ListenAndServe(t *testing.T) {
 				t.Fatalf("unexpected error from receiveTestResponse: got %s, expect nil\n", err)
 			}
 			if actual != test.expected {
-				t.Errorf("unexpected response from receiveTestResponse: got %s, expect %s\n", actual, test.expected)
+				t.Errorf("unexpected response from receiveTestResponse: got %q, expect %q\n", actual, test.expected)
 			}
 		})
 	}
@@ -74,11 +75,10 @@ func receiveTestResponse(network, method, uri string) (string, error) {
 	defer conn.Close()
 
 	fmt.Fprintf(conn, "%s %s\n", method, filepath.Join(addr, parsed.Path))
-	resp := make([]byte, 1024)
-	n, err := conn.Read(resp)
+	resp, err := ioutil.ReadAll(conn)
 	if err != nil {
 		return "", err
 	}
 
-	return string(resp[:n]), nil
+	return string(resp), nil
 }

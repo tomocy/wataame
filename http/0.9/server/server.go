@@ -49,16 +49,17 @@ func (s *Server) Serve(l net.Listener) error {
 			defer conn.Close()
 			r, err := readRequest(conn)
 			if err != nil {
-				conn.Write([]byte(err.Error()))
+				fmt.Fprintln(conn, err)
 				return
 			}
 
 			if r.Method != http.MethodGet {
-				conn.Write([]byte("method not allowed"))
+				fmt.Fprintln(conn, "method not allowed")
 				return
 			}
 
 			s.Handler.Handle(conn, r)
+			fmt.Fprintln(conn)
 		}()
 	}
 }
@@ -109,18 +110,18 @@ type FileServer struct {
 func (s *FileServer) Handle(w io.Writer, r *http0_9.Request) {
 	f, err := s.Root.Open(r.URI.Path)
 	if err != nil {
-		w.Write([]byte("not found"))
+		fmt.Fprint(w, "not found")
 		return
 	}
 	defer f.Close()
 
 	stat, err := f.Stat()
 	if err != nil {
-		w.Write([]byte("interanl server error"))
+		fmt.Fprint(w, "internal server error")
 		return
 	}
 	if stat.IsDir() {
-		w.Write([]byte("not found"))
+		fmt.Fprint(w, "not found")
 		return
 	}
 
