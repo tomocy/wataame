@@ -3,7 +3,6 @@ package server
 import (
 	"errors"
 	"io"
-	"log"
 	"net"
 	"net/url"
 	"strings"
@@ -49,7 +48,7 @@ func (s *Server) Serve(l net.Listener) error {
 				conn.Write([]byte(err.Error()))
 				return
 			}
-			log.Println(r)
+
 			if r.Method != http.MethodGet {
 				conn.Write([]byte("method not allowed"))
 			}
