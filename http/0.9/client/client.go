@@ -22,13 +22,15 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 	if err := r.Write(conn); err != nil {
 		return nil, err
 	}
-	resp := make(http0_9.Response, 1024)
-	n, err := conn.Read(resp)
-	if err != nil {
+	respCh, errCh := c.receive(conn)
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case resp := <-respCh:
+		return resp, nil
+	case err := <-errCh:
 		return nil, err
 	}
-
-	return resp[:n], nil
 }
 
 func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) {
