@@ -1,7 +1,6 @@
 package http
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -40,7 +39,7 @@ func (a ipv6Addr) proto() string {
 }
 
 func (a ipv6Addr) compensate() (string, error) {
-	host, port, err := a.parse()
+	host, port, err := parseHostPort(string(a))
 	if err != nil {
 		return "", err
 	}
@@ -48,48 +47,7 @@ func (a ipv6Addr) compensate() (string, error) {
 		port = "80"
 	}
 
-	return strings.Join([]string{host, port}, ":"), nil
-}
-
-func (a ipv6Addr) parse() (string, string, error) {
-	if len(a) <= 0 {
-		return "", "", errors.New("address is empty")
-	}
-	host, err := a.parseHost()
-	if err != nil {
-		return "", "", err
-	}
-	port, err := a.parsePort(host)
-	if err != nil {
-		return "", "", err
-	}
-
-	return host, port, nil
-}
-
-func (a ipv6Addr) parseHost() (string, error) {
-	if a[0] != '[' {
-		return "", errors.New("[ is missing")
-	}
-	end := strings.IndexByte(string(a)[1:], ']') + 1
-	if end < 0 {
-		return "", errors.New("] is missing")
-	}
-
-	return string(a)[0 : end+1], nil
-}
-
-func (a ipv6Addr) parsePort(host string) (string, error) {
-	splited := strings.Split(string(a), host)
-	if len(splited) < 2 {
-		return "", nil
-	}
-	port := splited[1]
-	if 1 <= len(port) && port[0] == ':' {
-		port = port[1:]
-	}
-
-	return port, nil
+	return fmt.Sprintf("[%s]:%s", host, port), nil
 }
 
 type ipv4Addr string
