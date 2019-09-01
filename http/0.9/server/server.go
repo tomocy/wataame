@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/url"
 	"strings"
@@ -77,18 +76,11 @@ func readRequest(conn net.Conn) (*http0_9.Request, error) {
 		}
 	}
 
-	fmt.Fprintln(&b)
-
 	return parseRequest(b.Bytes())
 }
 
 func parseRequest(bs []byte) (*http0_9.Request, error) {
-	log.Println(string(bs))
-	splited := strings.Split(string(bs), "\n")
-	if len(splited) < 2 {
-		return nil, errors.New("invalid format of request: finishing without a new line")
-	}
-	splited = strings.Split(splited[0], " ")
+	splited := strings.Split(string(bs), " ")
 	if len(splited) < 2 {
 		return nil, errors.New("invalid format of request: missing space between method and uri")
 	}
