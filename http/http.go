@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -104,6 +105,18 @@ func (a ipv4Addr) compensate() (string, error) {
 	}
 
 	return strings.Join(splited[:2], ":"), nil
+}
+
+func parseHostPort(raw string) (string, string, error) {
+	if !strings.HasPrefix(raw, "http://") {
+		raw = "http://" + raw
+	}
+	parsed, err := url.Parse(raw)
+	if err != nil {
+		return "", "", err
+	}
+
+	return parsed.Hostname(), parsed.Port(), nil
 }
 
 type Dir string
