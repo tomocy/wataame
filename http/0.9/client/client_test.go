@@ -1,9 +1,9 @@
 package client
 
 import (
+	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"net/url"
 	"testing"
 
@@ -25,7 +25,13 @@ func TestClient_Do(t *testing.T) {
 		}
 		defer conn.Close()
 
-		io.Copy(conn, conn)
+		r := bufio.NewReader(conn)
+		read, _, err := r.ReadLine()
+		if err != nil {
+			t.Fatalf("unexpected error from (*Reader).Read: %s\n", err)
+		}
+
+		fmt.Fprintln(conn, string(read))
 	}()
 
 	addr := l.Addr().String()
