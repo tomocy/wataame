@@ -1,8 +1,12 @@
 package server
 
 import (
+	"bufio"
+	"bytes"
 	"errors"
+	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/url"
 	"strings"
@@ -59,16 +63,25 @@ func (s *Server) Serve(l net.Listener) error {
 }
 
 func readRequest(conn net.Conn) (*http0_9.Request, error) {
-	r := make([]byte, 1024)
-	n, err := conn.Read(r)
-	if err != nil {
-		return nil, err
+	var b bytes.Buffer
+	r := bufio.NewReader(conn)
+	for line, isPrefix, err := r.ReadLine(); ; {
+		if err != nil {
+			return nil, err
+		}
+		b.Write(line)
+		if !isPrefix {
+			break
+		}
 	}
 
-	return parseRequest(r[:n])
+	fmt.Fprintln(&b)
+
+	return parseRequest(b.Bytes())
 }
 
 func parseRequest(bs []byte) (*http0_9.Request, error) {
+	log.Println(string(bs))
 	splited := strings.Split(string(bs), "\n")
 	if len(splited) < 2 {
 		return nil, errors.New("invalid format of request: finishing without a new line")
