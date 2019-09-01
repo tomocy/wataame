@@ -57,12 +57,15 @@ func (a ipv4Addr) proto() string {
 }
 
 func (a ipv4Addr) compensate() (string, error) {
-	splited := strings.Split(string(a), ":")
-	if len(splited) < 2 {
-		return splited[0] + ":80", nil
+	host, port, err := parseHostPort(string(a))
+	if err != nil {
+		return "", nil
+	}
+	if port == "" {
+		port = "80"
 	}
 
-	return strings.Join(splited[:2], ":"), nil
+	return fmt.Sprintf("%s:%s", host, port), nil
 }
 
 func parseHostPort(raw string) (string, string, error) {
