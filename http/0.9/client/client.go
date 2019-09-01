@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"io/ioutil"
 	"net"
 
 	http "github.com/tomocy/wataame/http"
@@ -28,6 +29,26 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 	}
 
 	return resp[:n], nil
+}
+
+func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) {
+	respCh, errCh := make(chan http0_9.Response), make(chan error)
+	go func() {
+		defer func() {
+			close(respCh)
+			close(errCh)
+		}()
+
+		resp, err := ioutil.ReadAll(conn)
+		if err != nil {
+			errCh <- err
+			return
+		}
+
+		respCh <- resp
+	}()
+
+	return respCh, errCh
 }
 
 func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (net.Conn, error) {
