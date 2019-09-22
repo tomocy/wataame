@@ -19,6 +19,17 @@ type Request struct {
 	Body   io.ReadCloser
 }
 
+type Response struct {
+	StatusLine *StatusLine
+	Header     Header
+	Body       []byte
+}
+
+type StatusLine struct {
+	Version string
+	Status  *Status
+}
+
 type Status struct {
 	Code   int
 	Phrase string
