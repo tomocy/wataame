@@ -18,3 +18,5 @@ type Request struct {
 	URI    *url.URL
 	Body   io.ReadCloser
 }
+
+type Header map[string][]string
