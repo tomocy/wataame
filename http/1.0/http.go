@@ -19,4 +19,9 @@ type Request struct {
 	Body   io.ReadCloser
 }
 
+type Status struct {
+	Code   int
+	Phrase string
+}
+
 type Header map[string][]string
