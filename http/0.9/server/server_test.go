@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	http "github.com/tomocy/wataame/http"
+	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
 
 func TestServer_ListenAndServe(t *testing.T) {
@@ -30,12 +31,12 @@ func TestServer_ListenAndServe(t *testing.T) {
 		expected    string
 	}{
 		"ok": {
-			http.MethodGet,
+			http0_9.MethodGet,
 			"http://" + filepath.Join(addr, "/index.html"),
 			"<h1>Hello world</h1>\n",
 		},
 		"not found": {
-			http.MethodGet,
+			http0_9.MethodGet,
 			"http://" + filepath.Join(addr, "/"),
 			"not found\n",
 		},

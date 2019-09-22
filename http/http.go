@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-const MethodGet = "GET"
-
 type Addr string
 
 func (a Addr) Compensate() (string, error) {
