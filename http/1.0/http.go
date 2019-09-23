@@ -10,6 +10,8 @@ const (
 	MethodPost = "POST"
 )
 
+type SimpleRequest http0_9.Request
+
 type Response struct {
 	StatusLine *StatusLine
 	Header     Header
