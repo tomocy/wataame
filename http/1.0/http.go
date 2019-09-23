@@ -28,12 +28,6 @@ type RequestLine struct {
 	Version *Version
 }
 
-type Response struct {
-	StatusLine *StatusLine
-	Header     Header
-	Body       []byte
-}
-
 type StatusLine struct {
 	Version *Version
 	Status  *Status
