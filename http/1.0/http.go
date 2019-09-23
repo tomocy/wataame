@@ -30,6 +30,12 @@ type RequestLine struct {
 
 type SimpleResponse http0_9.Response
 
+type FullResponse struct {
+	StatusLine *StatusLine
+	Header     Header
+	Body       io.ReadCloser
+}
+
 type StatusLine struct {
 	Version *Version
 	Status  *Status
