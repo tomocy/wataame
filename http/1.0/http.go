@@ -1,6 +1,8 @@
 package http
 
 import (
+	"net/url"
+
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
 
@@ -11,6 +13,12 @@ const (
 )
 
 type SimpleRequest http0_9.Request
+
+type RequestLine struct {
+	Method  string
+	URI     *url.URL
+	Version string
+}
 
 type Response struct {
 	StatusLine *StatusLine
