@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"io"
 	"net/url"
 
@@ -40,6 +41,10 @@ type StatusLine struct {
 
 type Version struct {
 	Major, Minor int
+}
+
+func (v Version) String() string {
+	return fmt.Sprintf("HTTP/%d.%d", v.Major, v.Minor)
 }
 
 type Status struct {
