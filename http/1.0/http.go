@@ -38,6 +38,10 @@ type StatusLine struct {
 	Status  *Status
 }
 
+type Version struct {
+	Major, Minor int
+}
+
 type Status struct {
 	Code   int
 	Phrase string
