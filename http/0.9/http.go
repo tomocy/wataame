@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-
-	"github.com/tomocy/wataame/http"
 )
 
 const MethodGet = "GET"
@@ -16,12 +14,9 @@ type Request struct {
 }
 
 func (r *Request) Write(dst io.Writer) error {
-	addr, err := http.Addr(r.URI.Host).Compensate()
-	if err != nil {
-		return err
-	}
+	var err error
+	_, err = fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
 
-	_, err = fmt.Fprintf(dst, "%s %s\n", MethodGet, addr)
 	return err
 }
 

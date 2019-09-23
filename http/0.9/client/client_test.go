@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"path/filepath"
 	"testing"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -33,13 +34,13 @@ func TestClient_Do(t *testing.T) {
 		fmt.Fprintln(conn, string(read))
 	}()
 
-	addr := l.Addr().String()
-	expected := fmt.Sprintf("%s %s\n", http0_9.MethodGet, addr)
+	path := "/index.html"
+	expected := fmt.Sprintf("%s %s\n", http0_9.MethodGet, path)
 
 	var client Client
-	uri, _ := url.Parse("http://" + addr)
+	uri, _ := url.Parse("http://" + filepath.Join(l.Addr().String(), path))
 	resp, err := client.Do(context.Background(), &http0_9.Request{
-		URI: uri,
+		Method: http0_9.MethodGet, URI: uri,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error from (*Client).Do: %s\n", err)
