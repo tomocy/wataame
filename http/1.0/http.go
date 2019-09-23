@@ -1,6 +1,7 @@
 package http
 
 import (
+	"io"
 	"net/url"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -13,6 +14,12 @@ const (
 )
 
 type SimpleRequest http0_9.Request
+
+type FullRequest struct {
+	RequestLine *RequestLine
+	Header      Header
+	Body        io.ReadCloser
+}
 
 type RequestLine struct {
 	Method  string
