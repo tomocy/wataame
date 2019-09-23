@@ -25,7 +25,7 @@ type FullRequest struct {
 type RequestLine struct {
 	Method  string
 	URI     *url.URL
-	Version string
+	Version *Version
 }
 
 type Response struct {
@@ -35,7 +35,7 @@ type Response struct {
 }
 
 type StatusLine struct {
-	Version string
+	Version *Version
 	Status  *Status
 }
 
