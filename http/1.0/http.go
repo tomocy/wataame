@@ -28,6 +28,8 @@ type RequestLine struct {
 	Version *Version
 }
 
+type SimpleResponse http0_9.Response
+
 type StatusLine struct {
 	Version *Version
 	Status  *Status
