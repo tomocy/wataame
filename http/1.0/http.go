@@ -50,7 +50,9 @@ func (l RequestLine) String() string {
 	return b.String()
 }
 
-type SimpleResponse http0_9.Response
+type SimpleResponse struct {
+	http0_9.Response
+}
 
 type FullResponse struct {
 	StatusLine *StatusLine
