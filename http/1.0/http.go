@@ -25,6 +25,18 @@ type FullRequest struct {
 	Body        io.ReadCloser
 }
 
+func (r FullRequest) String() string {
+	var b strings.Builder
+	fmt.Fprintln(&b, r.RequestLine)
+	fmt.Fprintln(&b, r.Header)
+	fmt.Fprintln(&b)
+	if r.RequestLine.Method == MethodPost {
+		io.Copy(&b, r.Body)
+	}
+
+	return b.String()
+}
+
 type RequestLine struct {
 	Method  string
 	URI     *url.URL

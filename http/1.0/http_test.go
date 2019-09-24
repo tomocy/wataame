@@ -1,23 +1,22 @@
 package http
 
 import (
-	"bytes"
 	"io/ioutil"
 	"net/url"
 	"strings"
 	"testing"
 )
 
-func TestFullRequest_Write(t *testing.T) {
+func TestFullRequest_String(t *testing.T) {
 	uri, _ := url.Parse("http://localhost:1234/index.html")
 	tests := map[string]struct {
-		req      *FullRequest
+		subject  *FullRequest
 		expected string
 	}{
 		"GET method": {
-			req: &FullRequest{
+			subject: &FullRequest{
 				RequestLine: &RequestLine{
-					Method: MethodGet, URI: uri,
+					Method: MethodGet, URI: uri, Version: &Version{Major: 1, Minor: 0},
 				},
 				Header: Header{
 					"Date": []string{"Tue, 15 Nov 1994 08:12:31 GMT"},
@@ -29,9 +28,9 @@ Date: Tue, 15 Nov 1994 08:12:31 GMT
 `,
 		},
 		"HEAD method": {
-			req: &FullRequest{
+			subject: &FullRequest{
 				RequestLine: &RequestLine{
-					Method: MethodGet, URI: uri,
+					Method: MethodHead, URI: uri, Version: &Version{Major: 1, Minor: 0},
 				},
 				Header: Header{
 					"User-Agent": []string{"CERN-LineMode/2.15", "libwww/2.17b3"},
@@ -43,9 +42,9 @@ User-Agent: CERN-LineMode/2.15 libwww/2.17b3
 `,
 		},
 		"POST method": {
-			req: &FullRequest{
+			subject: &FullRequest{
 				RequestLine: &RequestLine{
-					Method: MethodGet, URI: uri,
+					Method: MethodPost, URI: uri, Version: &Version{Major: 1, Minor: 0},
 				},
 				Header: Header{
 					"Content-Type": []string{"application/x-www-form-urlencoded"},
@@ -63,13 +62,9 @@ name=foo&password=bar`,
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			var actual bytes.Buffer
-			if err := test.req.Write(&actual); err != nil {
-				t.Errorf("unexpected error from (*Request).Write: got %s, expect nil\n", err)
-				return
-			}
-			if actual.String() != test.expected {
-				t.Errorf("unexpected request format from (*Request).Write: got %s, expect %s\n", &actual, test.expected)
+			actual := test.subject.String()
+			if actual != test.expected {
+				t.Errorf("unexpected request format from (FullRequest).String: got %s, expect %s\n", actual, test.expected)
 			}
 		})
 	}
