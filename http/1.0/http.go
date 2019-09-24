@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strings"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
@@ -28,6 +29,13 @@ type RequestLine struct {
 	Method  string
 	URI     *url.URL
 	Version *Version
+}
+
+func (l RequestLine) String() string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s %s %s", l.Method, l.URI.Path, l.Version)
+
+	return b.String()
 }
 
 type SimpleResponse http0_9.Response
