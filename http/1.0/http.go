@@ -65,3 +65,17 @@ type Status struct {
 }
 
 type Header map[string][]string
+
+func (h Header) String() string {
+	var b strings.Builder
+	var i int
+	for k, vs := range h {
+		fmt.Fprintf(&b, "%s: %s", k, strings.Join(vs, " "))
+		if i != len(h)-1 {
+			b.WriteByte('\n')
+		}
+		i++
+	}
+
+	return b.String()
+}
