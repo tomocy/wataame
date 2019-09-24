@@ -14,7 +14,9 @@ const (
 	MethodPost = "POST"
 )
 
-type SimpleRequest http0_9.Request
+type SimpleRequest struct {
+	http0_9.Request
+}
 
 type FullRequest struct {
 	RequestLine *RequestLine
