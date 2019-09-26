@@ -13,7 +13,7 @@ func TestRequest_Write(t *testing.T) {
 	}
 	expected := "GET /index.html\n"
 	var actual bytes.Buffer
-	subject.Write(&actual)
+	subject.WriteTo(&actual)
 
 	if actual.String() != expected {
 		t.Errorf("unexpected result of (*Request).Write: got %s, expect %s\n", &actual, expected)

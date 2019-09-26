@@ -13,9 +13,8 @@ type Request struct {
 	URI    *url.URL
 }
 
-func (r *Request) Write(dst io.Writer) error {
-	var err error
-	_, err = fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
+func (r *Request) WriteTo(dst io.Writer) error {
+	_, err := fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
 
 	return err
 }

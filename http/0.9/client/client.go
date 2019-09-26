@@ -19,7 +19,7 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 		return nil, err
 	}
 
-	if err := r.Write(conn); err != nil {
+	if err := r.WriteTo(conn); err != nil {
 		return nil, err
 	}
 	respCh, errCh := c.receive(conn)
