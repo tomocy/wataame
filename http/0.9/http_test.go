@@ -1,8 +1,8 @@
 package http
 
 import (
-	"bytes"
 	"net/url"
+	"strings"
 	"testing"
 )
 
@@ -12,10 +12,10 @@ func TestRequest_WriteTo(t *testing.T) {
 		Method: MethodGet, URI: uri,
 	}
 	expected := "GET /index.html\n"
-	var actual bytes.Buffer
+	var actual strings.Builder
 	subject.WriteTo(&actual)
 
 	if actual.String() != expected {
-		t.Errorf("unexpected result of (*Request).Write: got %s, expect %s\n", &actual, expected)
+		t.Errorf("unexpected result of (*Request).WriteTo: got %s, expect %s\n", &actual, expected)
 	}
 }
