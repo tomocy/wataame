@@ -14,7 +14,7 @@ type Request struct {
 }
 
 func (r *Request) WriteTo(dst io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
+	n, err := fmt.Fprintln(dst, r)
 	return int64(n), err
 }
 
