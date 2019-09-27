@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestRequest_Write(t *testing.T) {
+func TestRequest_WriteTo(t *testing.T) {
 	uri, _ := url.Parse("http://golang.org/index.html")
 	subject := &Request{
 		Method: MethodGet, URI: uri,
