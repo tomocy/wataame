@@ -18,4 +18,8 @@ func (r *Request) WriteTo(dst io.Writer) (int64, error) {
 	return int64(n), err
 }
 
+func (r *Request) String() string {
+	return fmt.Sprintf("%s %s", r.Method, r.URI.Path)
+}
+
 type Response []byte
