@@ -13,10 +13,9 @@ type Request struct {
 	URI    *url.URL
 }
 
-func (r *Request) WriteTo(dst io.Writer) error {
-	_, err := fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
-
-	return err
+func (r *Request) WriteTo(dst io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(dst, "%s %s\n", r.Method, r.URI.EscapedPath())
+	return int64(n), err
 }
 
 type Response []byte
