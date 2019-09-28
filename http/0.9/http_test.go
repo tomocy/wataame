@@ -2,20 +2,18 @@ package http
 
 import (
 	"net/url"
-	"strings"
 	"testing"
 )
 
-func TestRequest_WriteTo(t *testing.T) {
-	uri, _ := url.Parse("http://golang.org/index.html")
+func TestRequest_String(t *testing.T) {
+	uri, _ := url.Parse("http://localhost:1234/index.html")
 	subject := &Request{
 		Method: MethodGet, URI: uri,
 	}
 	expected := "GET /index.html\n"
-	var actual strings.Builder
-	subject.WriteTo(&actual)
+	actual := subject.String()
 
-	if actual.String() != expected {
-		t.Errorf("unexpected result of (*Request).WriteTo: got %s, expect %s\n", &actual, expected)
+	if actual != expected {
+		t.Errorf("unexpected result of (*Request).String: got %s, expect %s\n", actual, expected)
 	}
 }
