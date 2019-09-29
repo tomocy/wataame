@@ -44,10 +44,7 @@ type RequestLine struct {
 }
 
 func (l RequestLine) String() string {
-	var b strings.Builder
-	fmt.Fprintf(&b, "%s %s %s", l.Method, l.URI.Path, l.Version)
-
-	return b.String()
+	return fmt.Sprintf("%s %s %s", l.Method, l.URI.Path, l.Version)
 }
 
 type SimpleResponse struct {
