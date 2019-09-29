@@ -30,7 +30,7 @@ func (r FullRequest) String() string {
 	fmt.Fprintln(&b, r.RequestLine)
 	fmt.Fprintln(&b, r.Header)
 	fmt.Fprintln(&b)
-	if r.RequestLine.Method == MethodPost {
+	if r.Body != nil {
 		io.Copy(&b, r.Body)
 	}
 
