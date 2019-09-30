@@ -25,6 +25,11 @@ type FullRequest struct {
 	Body        io.ReadCloser
 }
 
+func (r *FullRequest) WriteTo(dst io.Writer) (int64, error) {
+	n, err := dst.Write([]byte(r.String()))
+	return int64(n), err
+}
+
 func (r FullRequest) String() string {
 	var b strings.Builder
 	fmt.Fprintln(&b, r.RequestLine)
