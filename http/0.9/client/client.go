@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net"
 
-	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
+	"github.com/tomocy/wataame/ip"
 	"github.com/tomocy/wataame/tcp"
 )
 
@@ -35,7 +35,7 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 }
 
 func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (tcp.Conn, error) {
-	addr, err := http.Addr(r.URI.Host).Compensate()
+	addr, err := ip.Addr(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, err
 	}

@@ -11,6 +11,7 @@ import (
 
 	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
+	"github.com/tomocy/wataame/ip"
 )
 
 func TestServer_ListenAndServe(t *testing.T) {
@@ -65,7 +66,7 @@ func receiveTestResponse(network, method, uri string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	addr, err := http.Addr(parsed.Host).Compensate()
+	addr, err := ip.Addr(parsed.Host).Compensate()
 	if err != nil {
 		return "", err
 	}

@@ -12,6 +12,7 @@ import (
 
 	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
+	"github.com/tomocy/wataame/ip"
 )
 
 type Server struct {
@@ -30,7 +31,7 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) listen() (net.Listener, error) {
-	compensated, err := http.Addr(s.Addr).Compensate()
+	compensated, err := ip.Addr(s.Addr).Compensate()
 	if err != nil {
 		return nil, err
 	}
