@@ -26,7 +26,7 @@ type FullRequest struct {
 }
 
 func (r *FullRequest) WriteTo(dst io.Writer) (int64, error) {
-	n, err := dst.Write([]byte(r.String()))
+	n, err := fmt.Fprint(dst, r)
 	return int64(n), err
 }
 
