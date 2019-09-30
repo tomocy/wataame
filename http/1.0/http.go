@@ -1,8 +1,10 @@
 package http
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/url"
 	"strings"
 
@@ -30,16 +32,25 @@ func (r *FullRequest) WriteTo(dst io.Writer) (int64, error) {
 	return int64(n), err
 }
 
-func (r FullRequest) String() string {
+func (r *FullRequest) String() string {
 	var b strings.Builder
 	fmt.Fprintln(&b, r.RequestLine)
 	fmt.Fprintln(&b, r.Header)
 	fmt.Fprintln(&b)
 	if r.Body != nil {
-		io.Copy(&b, r.Body)
+		teed := r.teeBody()
+		io.Copy(&b, teed)
 	}
 
 	return b.String()
+}
+
+func (r *FullRequest) teeBody() io.Reader {
+	var b bytes.Buffer
+	teed := io.TeeReader(r.Body, &b)
+	r.Body = ioutil.NopCloser(&b)
+
+	return teed
 }
 
 type RequestLine struct {
