@@ -19,11 +19,12 @@ func TestFullRequest_WriteTo(t *testing.T) {
 					Method: MethodGet, URI: uri, Version: &Version{Major: 1, Minor: 0},
 				},
 				Header: Header{
-					"Date": []string{"Tue, 15 Nov 1994 08:12:31 GMT"},
+					"Date": []string{"Tue, 15 Nov 1994 08:12:31 GMT", "Wed, 16 Nov 1994 08:12:31 GMT"},
 				},
 			},
 			expected: `GET /index.html HTTP/1.0
 Date: Tue, 15 Nov 1994 08:12:31 GMT
+Date: Wed, 16 Nov 1994 08:12:31 GMT
 
 `,
 		},
@@ -37,7 +38,8 @@ Date: Tue, 15 Nov 1994 08:12:31 GMT
 				},
 			},
 			expected: `HEAD /index.html HTTP/1.0
-User-Agent: CERN-LineMode/2.15 libwww/2.17b3
+User-Agent: CERN-LineMode/2.15
+User-Agent: libwww/2.17b3
 
 `,
 		},

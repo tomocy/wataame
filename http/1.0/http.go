@@ -84,14 +84,11 @@ type Header map[string][]string
 
 func (h Header) String() string {
 	var b strings.Builder
-	var i int
 	for k, vs := range h {
-		fmt.Fprintf(&b, "%s: %s", k, strings.Join(vs, " "))
-		if i != len(h)-1 {
-			b.WriteByte('\n')
+		for _, v := range vs {
+			fmt.Fprintf(&b, "%s: %s\n", k, v)
 		}
-		i++
 	}
 
-	return b.String()
+	return strings.TrimSuffix(b.String(), "\n")
 }
