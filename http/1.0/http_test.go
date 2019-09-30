@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestFullRequest_String(t *testing.T) {
+func TestFullRequest_WriteTo(t *testing.T) {
 	uri, _ := url.Parse("http://localhost:1234/index.html")
 	tests := map[string]struct {
 		subject  *FullRequest
@@ -62,9 +62,11 @@ name=foo&password=bar`,
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			actual := test.subject.String()
+			var b strings.Builder
+			test.subject.WriteTo(&b)
+			actual := b.String()
 			if actual != test.expected {
-				t.Errorf("unexpected request format from (FullRequest).String: got %s, expect %s\n", actual, test.expected)
+				t.Errorf("unexpected (*FullRequest).WriteTo: got %s, expect %s\n", actual, test.expected)
 			}
 		})
 	}
