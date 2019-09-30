@@ -7,10 +7,11 @@ import (
 
 	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
+	"github.com/tomocy/wataame/tcp"
 )
 
 type Client struct {
-	Dialer Dialer
+	Dialer tcp.Dialer
 }
 
 func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, error) {
@@ -33,22 +34,22 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 	}
 }
 
-func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (net.Conn, error) {
+func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (tcp.Conn, error) {
 	addr, err := http.Addr(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, err
 	}
 
-	return c.dial(ctx, "tcp", addr)
+	return c.dial(ctx, addr)
 }
 
-func (c *Client) dial(ctx context.Context, network, addr string) (net.Conn, error) {
+func (c *Client) dial(ctx context.Context, addr string) (tcp.Conn, error) {
 	d := c.Dialer
 	if d == nil {
-		d = new(DefaultDialer)
+		d = new(tcp.GoDialer)
 	}
 
-	return d.Dial(ctx, network, addr)
+	return d.Dial(ctx, addr)
 }
 
 func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) {
@@ -69,16 +70,4 @@ func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) 
 	}()
 
 	return respCh, errCh
-}
-
-type Dialer interface {
-	Dial(ctx context.Context, network, addr string) (net.Conn, error)
-}
-
-type DefaultDialer struct {
-	net.Dialer
-}
-
-func (d *DefaultDialer) Dial(ctx context.Context, network, addr string) (net.Conn, error) {
-	return d.Dialer.DialContext(ctx, network, addr)
 }
