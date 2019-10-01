@@ -222,6 +222,9 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 			}
 			return fmt.Errorf("failed to scan values of header field: %s", err)
 		}
+		if read == '\n' {
+			break
+		}
 		if read == ',' {
 			vs, v = append(vs, v), nil
 			continue
