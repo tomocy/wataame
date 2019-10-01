@@ -241,3 +241,7 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 
 	return nil
 }
+
+type body struct {
+	bytes.Buffer
+}
