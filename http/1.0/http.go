@@ -63,6 +63,17 @@ func (l RequestLine) String() string {
 	return fmt.Sprintf("%s %s %s", l.Method, l.URI.Path, l.Version)
 }
 
+func (l *RequestLine) Scan(state fmt.ScanState, _ rune) error {
+	var uri scannableURL
+	l.Version = new(Version)
+	if _, err := fmt.Fscanf(state, "%s %v %v", &l.Method, &uri, l.Version); err != nil {
+		return fmt.Errorf("failed to scan request line: %s", err)
+	}
+	l.URI = &uri.URL
+
+	return nil
+}
+
 type scannableURL struct {
 	url.URL
 }
