@@ -108,3 +108,66 @@ type headerField struct {
 	key  string
 	vals []string
 }
+
+func (f *headerField) Scan(state fmt.ScanState, _ rune) error {
+	if err := f.scanKey(state); err != nil {
+		return fmt.Errorf("failed to scan header field: %s", err)
+	}
+	state.ReadRune()
+	state.ReadRune()
+	if err := f.scanValues(state); err != nil {
+		return fmt.Errorf("failed to scan header field: %s", err)
+	}
+
+	return nil
+}
+
+func (f *headerField) scanKey(r io.RuneScanner) error {
+	var k []rune
+	for {
+		read, _, err := r.ReadRune()
+		if err != nil {
+			return fmt.Errorf("failed to scan key of header field: %s", err)
+		}
+		if read == ':' {
+			r.UnreadRune()
+			break
+		}
+
+		k = append(k, read)
+	}
+
+	f.key = string(k)
+
+	return nil
+}
+
+func (f *headerField) scanValues(r io.RuneReader) error {
+	var (
+		vs [][]rune
+		v  []rune
+	)
+	for {
+		read, _, err := r.ReadRune()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return fmt.Errorf("failed to scan values of header field: %s", err)
+		}
+		if read == ',' {
+			vs, v = append(vs, v), nil
+			continue
+		}
+
+		v = append(v, read)
+	}
+	vs = append(vs, v)
+
+	f.vals = make([]string, len(vs))
+	for i, v := range vs {
+		f.vals[i] = strings.TrimLeft(string(v), " ")
+	}
+
+	return nil
+}
