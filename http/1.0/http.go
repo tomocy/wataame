@@ -63,6 +63,10 @@ func (l RequestLine) String() string {
 	return fmt.Sprintf("%s %s %s", l.Method, l.URI.Path, l.Version)
 }
 
+type scannableURL struct {
+	url.URL
+}
+
 type SimpleResponse struct {
 	http0_9.Response
 }
