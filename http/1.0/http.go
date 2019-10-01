@@ -86,6 +86,14 @@ func (v Version) String() string {
 	return fmt.Sprintf("HTTP/%d.%d", v.Major, v.Minor)
 }
 
+func (v *Version) Scan(state fmt.ScanState, _ rune) error {
+	if _, err := fmt.Fscanf(state, "HTTP/%d.%d", &v.Major, &v.Minor); err != nil {
+		return fmt.Errorf("failed to scan version: %s", err)
+	}
+
+	return nil
+}
+
 type Status struct {
 	Code   int
 	Phrase string
