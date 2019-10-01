@@ -150,6 +150,9 @@ func (h Header) Scan(state fmt.ScanState, _ rune) error {
 	for {
 		read, _, err := state.ReadRune()
 		if err != nil {
+			if err == io.EOF {
+				break
+			}
 			return fmt.Errorf("failed to scan header: %s", err)
 		}
 		state.UnreadRune()
