@@ -67,6 +67,25 @@ type scannableURL struct {
 	url.URL
 }
 
+func (u *scannableURL) Scan(state fmt.ScanState, _ rune) error {
+	var raw string
+	if _, err := fmt.Fscan(state, &raw); err != nil {
+		return fmt.Errorf("failed to scan uri: %s", err)
+	}
+
+	if !strings.HasPrefix(raw, "http://") && !strings.HasPrefix(raw, "https://") {
+		raw = "http://" + raw
+	}
+	parsed, err := url.Parse(raw)
+	if err != nil {
+		return fmt.Errorf("failed to scan uri: %s", err)
+	}
+
+	u.URL = *parsed
+
+	return nil
+}
+
 type SimpleResponse struct {
 	http0_9.Response
 }
