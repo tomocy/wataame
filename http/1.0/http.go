@@ -245,3 +245,21 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 type body struct {
 	bytes.Buffer
 }
+
+func (b *body) Scan(state fmt.ScanState, _ rune) error {
+	for {
+		read, _, err := state.ReadRune()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return fmt.Errorf("failed to scan body: %s", err)
+		}
+
+		if _, err := b.WriteRune(read); err != nil {
+			return fmt.Errorf("failed to scan body: %s", err)
+		}
+	}
+
+	return nil
+}
