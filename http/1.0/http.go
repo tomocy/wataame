@@ -53,6 +53,26 @@ func (r *FullRequest) teeBody() io.Reader {
 	return teed
 }
 
+func (r *FullRequest) Scan(state fmt.ScanState, _ rune) error {
+	r.RequestLine, r.Header = new(RequestLine), make(Header)
+	if _, err := fmt.Fscanln(state, r.RequestLine); err != nil {
+		return fmt.Errorf("failed to scan full request: %s", err)
+	}
+	if _, err := fmt.Fscan(state, r.Header); err != nil {
+		return fmt.Errorf("failed to scan full request: %s", err)
+	}
+	if _, _, err := state.ReadRune(); err != nil {
+		return fmt.Errorf("failed to scan full request: %s", err)
+	}
+	var body body
+	if _, err := fmt.Fscan(state, &body); err != nil {
+		return fmt.Errorf("failed to scan full request: %s", err)
+	}
+	r.Body = &body
+
+	return nil
+}
+
 type RequestLine struct {
 	Method  string
 	URI     *url.URL
