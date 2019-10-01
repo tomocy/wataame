@@ -263,3 +263,8 @@ func (b *body) Scan(state fmt.ScanState, _ rune) error {
 
 	return nil
 }
+
+func (b *body) Close() error {
+	c := ioutil.NopCloser(b)
+	return c.Close()
+}
