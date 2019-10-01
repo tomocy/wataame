@@ -104,6 +104,28 @@ func (h Header) String() string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 
+func (h Header) Scan(state fmt.ScanState, _ rune) error {
+	for {
+		read, _, err := state.ReadRune()
+		if err != nil {
+			return fmt.Errorf("failed to scan header: %s", err)
+		}
+		state.UnreadRune()
+		if read == '\n' {
+			break
+		}
+
+		var f headerField
+		if _, err := fmt.Fscanln(state, &f); err != nil {
+			return fmt.Errorf("failed to scan header: %s", err)
+		}
+
+		h[f.key] = append(h[f.key], f.vals...)
+	}
+
+	return nil
+}
+
 type headerField struct {
 	key  string
 	vals []string
