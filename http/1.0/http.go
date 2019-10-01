@@ -103,3 +103,8 @@ func (h Header) String() string {
 
 	return strings.TrimSuffix(b.String(), "\n")
 }
+
+type headerField struct {
+	key  string
+	vals []string
+}
