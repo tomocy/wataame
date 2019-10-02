@@ -1,6 +1,7 @@
 package http
 
 import (
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -15,3 +16,5 @@ func (d Dir) Open(name string) (*os.File, error) {
 type FileSystem interface {
 	Open(string) (*os.File, error)
 }
+
+type ScannableURL url.URL
