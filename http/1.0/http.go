@@ -98,8 +98,7 @@ func (l *RequestLine) Scan(state fmt.ScanState, _ rune) error {
 	if _, err := fmt.Fscanf(state, "%s %v %v", &l.Method, &uri, l.Version); err != nil {
 		return fmt.Errorf("failed to scan request line: %s", err)
 	}
-	casted := url.URL(uri)
-	l.URI = &casted
+	l.URI = uri.URL()
 
 	return nil
 }

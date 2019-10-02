@@ -29,8 +29,7 @@ func (r *Request) Scan(state fmt.ScanState, _ rune) error {
 	if _, err := fmt.Fscanf(state, "%s %v", &r.Method, &uri); err != nil {
 		return fmt.Errorf("failed to scan request: %s", err)
 	}
-	casted := url.URL(uri)
-	r.URI = &casted
+	r.URI = uri.URL()
 
 	return nil
 }
