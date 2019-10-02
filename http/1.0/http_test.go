@@ -1,8 +1,11 @@
 package http
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -72,4 +75,57 @@ name=foo&password=bar`,
 			}
 		})
 	}
+}
+
+func assertFullRequest(actual, expected *FullRequest) error {
+	if err := assertRequestLine(actual.RequestLine, expected.RequestLine); err != nil {
+		return fmt.Errorf("unexpected request line of full request: %s", err)
+	}
+	if !reflect.DeepEqual(actual.Header, expected.Header) {
+		return fmt.Errorf("unexpected header of full request: got %v, expect %v", actual.Header, expected.Header)
+	}
+	if err := assertBody(actual.Body, expected.Body); err != nil {
+		return fmt.Errorf("unexpected body of full request: %s", err)
+	}
+
+	return nil
+}
+
+func assertRequestLine(actual, expected *RequestLine) error {
+	if actual.Method != expected.Method {
+		return fmt.Errorf("unexpected method of request line: got %s, expect %s", actual.Method, expected.Method)
+	}
+	if actual.URI.String() != expected.URI.String() {
+		return fmt.Errorf("unexpected uri of request line: got %s, expect %s", actual.URI, expected.URI)
+	}
+	if err := assertVersion(actual.Version, expected.Version); err != nil {
+		return fmt.Errorf("unexpected version of request line: %s", err)
+	}
+
+	return nil
+}
+
+func assertVersion(actual, expected *Version) error {
+	if actual.Major != expected.Major {
+		return fmt.Errorf("unexpected major of version: got %d, expect %d", actual.Major, expected.Major)
+	}
+	if actual.Minor != expected.Minor {
+		return fmt.Errorf("unexpected minor of version: got %d, expect %d", actual.Minor, expected.Minor)
+	}
+
+	return nil
+}
+
+func assertBody(actual, expected io.ReadCloser) error {
+	defer func() {
+		actual.Close()
+		expected.Close()
+	}()
+	actualBody, _ := ioutil.ReadAll(actual)
+	expectedBody, _ := ioutil.ReadAll(expected)
+	if string(actualBody) != string(expectedBody) {
+		return fmt.Errorf("unexpected body: got %s, expect %s", string(actualBody), string(expectedBody))
+	}
+
+	return nil
 }
