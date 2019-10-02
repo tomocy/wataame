@@ -68,10 +68,12 @@ name=foo&password=bar`,
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			var b strings.Builder
-			test.subject.WriteTo(&b)
+			if _, err := test.subject.WriteTo(&b); err != nil {
+				t.Fatalf("unexpected error from (*FullRequest).WriteTo: got %s, expect nil\n", err)
+			}
 			actual := b.String()
 			if actual != test.expected {
-				t.Errorf("unexpected (*FullRequest).WriteTo: got %s, expect %s\n", actual, test.expected)
+				t.Errorf("unexpected FullRequest by (*FullRequest).WriteTo: got %s, expect %s\n", actual, test.expected)
 			}
 		})
 	}
@@ -136,11 +138,10 @@ name=foo&password=bar`,
 		t.Run(name, func(t *testing.T) {
 			actual := new(FullRequest)
 			if _, err := actual.ReadFrom(strings.NewReader(test.input)); err != nil {
-				t.Errorf("unexpected error from (*FullRequest).ReadFroom: got %s, expect nil\n", err)
-				return
+				t.Fatalf("unexpected error from (*FullRequest).ReadFroom: got %s, expect nil\n", err)
 			}
 			if err := assertFullRequest(actual, test.expected); err != nil {
-				t.Errorf("unexpected (*FullRequest).ReadFrom: %s\n", err)
+				t.Errorf("unexpected FullRequest by (*FullRequest).ReadFrom: %s\n", err)
 			}
 		})
 	}

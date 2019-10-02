@@ -52,10 +52,10 @@ func TestServer_ListenAndServe(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			actual, err := receiveTestResponse("tcp", test.method, test.uri)
 			if err != nil {
-				t.Fatalf("unexpected error from receiveTestResponse: got %s, expect nil\n", err)
+				t.Fatalf("unexpected error from (*Server).Serve: got %s, expect nil\n", err)
 			}
 			if actual != test.expected {
-				t.Errorf("unexpected response from receiveTestResponse: got %q, expect %q\n", actual, test.expected)
+				t.Errorf("unexpected Response from (*Server).Serve: got %q, expect %q\n", actual, test.expected)
 			}
 		})
 	}

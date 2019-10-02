@@ -21,14 +21,14 @@ func TestClient_Do(t *testing.T) {
 	go func() {
 		conn, err := l.Accept()
 		if err != nil {
-			t.Fatalf("unexpected error from (*Listener).Accept: %s\n", err)
+			t.Fatalf("unexpected error from (*Listener).Accept: got %s, expect nil\n", err)
 		}
 		defer conn.Close()
 
 		r := bufio.NewReader(conn)
 		read, _, err := r.ReadLine()
 		if err != nil {
-			t.Fatalf("unexpected error from (*Reader).Read: %s\n", err)
+			t.Fatalf("unexpected error from (*Reader).ReadLine: got %s, expect nil\n", err)
 		}
 
 		fmt.Fprintln(conn, string(read))
@@ -43,11 +43,11 @@ func TestClient_Do(t *testing.T) {
 		Method: http0_9.MethodGet, URI: uri,
 	})
 	if err != nil {
-		t.Fatalf("unexpected error from (*Client).Do: %s\n", err)
+		t.Fatalf("unexpected error from (*Client).Do: got %s, expect nil\n", err)
 	}
 	actual := string(resp)
 
 	if actual != expected {
-		t.Errorf("unexpected response from (*Client).Do: got %s, expect %s\n", actual, expected)
+		t.Errorf("unexpected Response from (*Client).Do: got %s, expect %s\n", actual, expected)
 	}
 }
