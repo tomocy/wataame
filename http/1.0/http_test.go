@@ -70,12 +70,6 @@ name=foo&password=bar`,
 			if actual != test.expected {
 				t.Errorf("unexpected (*FullRequest).WriteTo: got %s, expect %s\n", actual, test.expected)
 			}
-			b.Reset()
-			test.subject.WriteTo(&b)
-			actual = b.String()
-			if actual != test.expected {
-				t.Errorf("unexpected (*FullRequest).WriteTo: got %s, expect %s\n", actual, test.expected)
-			}
 		})
 	}
 }
