@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/url"
+	"sort"
 	"strings"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -53,6 +54,11 @@ func (r *FullRequest) teeBody() io.Reader {
 	return teed
 }
 
+func (r *FullRequest) ReadFrom(src io.Reader) (int64, error) {
+	n, err := fmt.Fscan(src, r)
+	return int64(n), err
+}
+
 func (r *FullRequest) Scan(state fmt.ScanState, _ rune) error {
 	r.RequestLine, r.Header = new(RequestLine), make(Header)
 	if _, err := fmt.Fscanln(state, r.RequestLine); err != nil {
@@ -64,11 +70,13 @@ func (r *FullRequest) Scan(state fmt.ScanState, _ rune) error {
 	if _, _, err := state.ReadRune(); err != nil {
 		return fmt.Errorf("failed to scan full request: %s", err)
 	}
-	var body body
-	if _, err := fmt.Fscan(state, &body); err != nil {
-		return fmt.Errorf("failed to scan full request: %s", err)
+	if !willBeEOF(state) {
+		var body body
+		if _, err := fmt.Fscan(state, &body); err != nil {
+			return fmt.Errorf("failed to scan full request: %s", err)
+		}
+		r.Body = &body
 	}
-	r.Body = &body
 
 	return nil
 }
@@ -245,7 +253,7 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 		if read == '\n' {
 			break
 		}
-		if read == ',' {
+		if f.isListable() && read == ',' {
 			vs, v = append(vs, v), nil
 			continue
 		}
@@ -260,6 +268,34 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 	}
 
 	return nil
+}
+
+func (f *headerField) isListable() bool {
+	sort.Strings(listableHeaders)
+	begin, end := 0, len(listableHeaders)-1
+	for begin <= end {
+		mid := (begin + end) / 2
+		if listableHeaders[mid] == f.key {
+			return true
+		}
+		if listableHeaders[mid] < f.key {
+			begin = mid + 1
+		} else {
+			end = mid - 1
+		}
+	}
+
+	return false
+}
+
+var listableHeaders = []string{
+	"Allow", "WWW-Authenticate",
+}
+
+func willBeEOF(r io.RuneScanner) bool {
+	_, _, err := r.ReadRune()
+	r.UnreadRune()
+	return err == io.EOF
 }
 
 type body struct {
