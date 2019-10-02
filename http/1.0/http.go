@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 )
 
@@ -92,35 +93,13 @@ func (l RequestLine) String() string {
 }
 
 func (l *RequestLine) Scan(state fmt.ScanState, _ rune) error {
-	var uri scannableURL
+	var uri http.ScannableURL
 	l.Version = new(Version)
 	if _, err := fmt.Fscanf(state, "%s %v %v", &l.Method, &uri, l.Version); err != nil {
 		return fmt.Errorf("failed to scan request line: %s", err)
 	}
-	l.URI = &uri.URL
-
-	return nil
-}
-
-type scannableURL struct {
-	url.URL
-}
-
-func (u *scannableURL) Scan(state fmt.ScanState, _ rune) error {
-	var raw string
-	if _, err := fmt.Fscan(state, &raw); err != nil {
-		return fmt.Errorf("failed to scan uri: %s", err)
-	}
-
-	if !strings.HasPrefix(raw, "http://") && !strings.HasPrefix(raw, "https://") {
-		raw = "http://" + raw
-	}
-	parsed, err := url.Parse(raw)
-	if err != nil {
-		return fmt.Errorf("failed to scan uri: %s", err)
-	}
-
-	u.URL = *parsed
+	casted := url.URL(uri)
+	l.URI = &casted
 
 	return nil
 }
