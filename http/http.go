@@ -39,3 +39,8 @@ func (u *ScannableURL) Scan(state fmt.ScanState, _ rune) error {
 
 	return nil
 }
+
+func (u *ScannableURL) URL() *url.URL {
+	casted := url.URL(*u)
+	return &casted
+}
