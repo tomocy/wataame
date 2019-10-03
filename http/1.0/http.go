@@ -27,6 +27,8 @@ type SimpleRequest struct {
 	http0_9.Request
 }
 
+func (r *SimpleRequest) request() {}
+
 type FullRequest struct {
 	RequestLine *RequestLine
 	Header      Header
