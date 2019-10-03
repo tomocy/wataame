@@ -32,10 +32,15 @@ func (s *Server) ListenAndServe() error {
 func (s *Server) listen() (net.Listener, error) {
 	compensated, err := ip.Addr(s.Addr).Compensate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to listen: %s", err)
 	}
 
-	return net.Listen("tcp", compensated)
+	l, err := net.Listen("tcp", compensated)
+	if err != nil {
+		return nil, fmt.Errorf("failed to listen: %s", err)
+	}
+
+	return l, nil
 }
 
 func (s *Server) Serve(l net.Listener) error {
