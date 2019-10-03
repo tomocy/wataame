@@ -98,3 +98,7 @@ type Handler interface {
 }
 
 type HandlerFunc func(io.Writer, *http0_9.Request)
+
+func (f HandlerFunc) Handle(w io.Writer, r *http0_9.Request) {
+	f(w, r)
+}
