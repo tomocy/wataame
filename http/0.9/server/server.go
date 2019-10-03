@@ -1,13 +1,9 @@
 package server
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"net"
-	"net/url"
-	"strings"
 
 	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -55,14 +51,14 @@ func (s *Server) Serve(l net.Listener) error {
 		}
 		go func() {
 			defer conn.Close()
-			r, err := readRequest(conn)
-			if err != nil {
+			r := new(http0_9.Request)
+			if _, err := r.ReadFrom(conn); err != nil {
 				fmt.Fprintf(conn, "failed to serve: %s\n", err)
 				return
 			}
 
 			if r.Method != http0_9.MethodGet {
-				fmt.Fprintln(conn, "failed to serve: method not allowed")
+				fmt.Fprintln(conn, "method not allowed")
 				return
 			}
 
@@ -70,43 +66,6 @@ func (s *Server) Serve(l net.Listener) error {
 			fmt.Fprintln(conn)
 		}()
 	}
-}
-
-func readRequest(conn net.Conn) (*http0_9.Request, error) {
-	var b bytes.Buffer
-	r := bufio.NewReader(conn)
-	for line, isPrefix, err := r.ReadLine(); ; {
-		if err != nil {
-			return nil, fmt.Errorf("failed to read request: %s", err)
-		}
-		b.Write(line)
-		if !isPrefix {
-			break
-		}
-	}
-
-	req, err := parseRequest(b.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to read request: %s", err)
-	}
-
-	return req, nil
-}
-
-func parseRequest(bs []byte) (*http0_9.Request, error) {
-	splited := strings.Split(string(bs), " ")
-	if len(splited) < 2 {
-		return nil, fmt.Errorf("failed to parse request: invalid format of request: got %s, expect method uri", string(bs))
-	}
-	uri, err := url.Parse("http://" + splited[1])
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse request: %s", err)
-	}
-
-	return &http0_9.Request{
-		Method: splited[0],
-		URI:    uri,
-	}, nil
 }
 
 type FileServer struct {
