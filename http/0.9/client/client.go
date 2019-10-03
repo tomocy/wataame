@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net"
 
@@ -62,7 +63,7 @@ func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) 
 
 		resp, err := ioutil.ReadAll(conn)
 		if err != nil {
-			errCh <- err
+			errCh <- fmt.Errorf("failed to recieve: %s", err)
 			return
 		}
 
