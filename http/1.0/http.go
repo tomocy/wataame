@@ -117,6 +117,8 @@ type SimpleResponse struct {
 	http0_9.Response
 }
 
+func (r *SimpleResponse) response() {}
+
 type FullResponse struct {
 	StatusLine *StatusLine
 	Header     Header
