@@ -36,8 +36,44 @@ type FullRequest struct {
 }
 
 func (r *FullRequest) WriteTo(dst io.Writer) (int64, error) {
+	r.assureRequiredHeader()
 	n, err := fmt.Fprint(dst, r)
 	return int64(n), err
+}
+
+func (r *FullRequest) assureRequiredHeader() error {
+	r.Header.assureRequired()
+	if err := r.assureContentLength(); err != nil {
+		return fmt.Errorf("failed to assure required header: %s", err)
+	}
+
+	return nil
+}
+
+func (r *FullRequest) assureContentLength() error {
+	if r.Body == nil {
+		return nil
+	}
+
+	l, err := r.measureBody()
+	if err != nil {
+		return fmt.Errorf("failed to assure content length: %s", err)
+	}
+
+	r.Header["Content-Length"] = []string{fmt.Sprint(l)}
+
+	return nil
+}
+
+func (r *FullRequest) measureBody() (int64, error) {
+	var w bytes.Buffer
+	teed := r.teeBody()
+	n, err := io.Copy(&w, teed)
+	if err != nil {
+		return 0, fmt.Errorf("failed to measure body: %s", err)
+	}
+
+	return n, nil
 }
 
 func (r *FullRequest) String() string {

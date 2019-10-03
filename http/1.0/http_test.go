@@ -28,6 +28,7 @@ func TestFullRequest_WriteTo(t *testing.T) {
 			expected: `GET /index.html HTTP/1.0
 Date: Tue, 15 Nov 1994 08:12:31 GMT
 Date: Wed, 16 Nov 1994 08:12:31 GMT
+Content-Length: 0
 
 `,
 		},
@@ -43,6 +44,7 @@ Date: Wed, 16 Nov 1994 08:12:31 GMT
 			expected: `HEAD /index.html HTTP/1.0
 User-Agent: CERN-LineMode/2.15
 User-Agent: libwww/2.17b3
+Content-Length: 0
 
 `,
 		},
@@ -60,6 +62,7 @@ User-Agent: libwww/2.17b3
 			},
 			expected: `POST /index.html HTTP/1.0
 Content-Type: application/x-www-form-urlencoded
+Content-Length: 21
 
 name=foo&password=bar`,
 		},
