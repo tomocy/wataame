@@ -22,11 +22,15 @@ type Server struct {
 func (s *Server) ListenAndServe() error {
 	l, err := s.listen()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to listen and serve: %s", err)
 	}
 	defer l.Close()
 
-	return s.Serve(l)
+	if err := s.Serve(l); err != nil {
+		return fmt.Errorf("failed to listen and serve: %s", err)
+	}
+
+	return nil
 }
 
 func (s *Server) listen() (net.Listener, error) {
