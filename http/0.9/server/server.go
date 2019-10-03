@@ -68,7 +68,7 @@ func readRequest(conn net.Conn) (*http0_9.Request, error) {
 	r := bufio.NewReader(conn)
 	for line, isPrefix, err := r.ReadLine(); ; {
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to read request: %s", err)
 		}
 		b.Write(line)
 		if !isPrefix {
@@ -76,7 +76,12 @@ func readRequest(conn net.Conn) (*http0_9.Request, error) {
 		}
 	}
 
-	return parseRequest(b.Bytes())
+	req, err := parseRequest(b.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to read request: %s", err)
+	}
+
+	return req, nil
 }
 
 func parseRequest(bs []byte) (*http0_9.Request, error) {
