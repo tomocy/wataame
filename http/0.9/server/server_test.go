@@ -38,17 +38,17 @@ func TestServer_ListenAndServe(t *testing.T) {
 		"ok": {
 			http0_9.MethodGet,
 			"http://" + filepath.Join(addr, "/index.html"),
-			"<h1>Hello world</h1>\n",
+			"<h1>Hello world</h1>",
 		},
 		"not found": {
 			http0_9.MethodGet,
 			"http://" + filepath.Join(addr, "/"),
-			"not found\n",
+			"not found",
 		},
 		"method not allowed": {
 			"HEAD",
 			"http://" + filepath.Join(addr, "/index.html"),
-			"method not allowed\n",
+			"method not allowed",
 		},
 	}
 

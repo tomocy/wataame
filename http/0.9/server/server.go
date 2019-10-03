@@ -58,12 +58,11 @@ func (s *Server) Serve(l net.Listener) error {
 			}
 
 			if r.Method != http0_9.MethodGet {
-				fmt.Fprintln(conn, "method not allowed")
+				fmt.Fprint(conn, "method not allowed")
 				return
 			}
 
 			s.Handler.Handle(conn, r)
-			fmt.Fprintln(conn)
 		}()
 	}
 }
