@@ -38,10 +38,15 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (tcp.Conn, error) {
 	addr, err := ip.Addr(r.URI.Host).Compensate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to dial for request: %s", err)
 	}
 
-	return c.dial(ctx, addr)
+	conn, err := c.dial(ctx, addr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to dial for request: %s", err)
+	}
+
+	return conn, nil
 }
 
 func (c *Client) dial(ctx context.Context, addr string) (tcp.Conn, error) {
