@@ -50,7 +50,12 @@ func (c *Client) dial(ctx context.Context, addr string) (tcp.Conn, error) {
 		d = new(tcp.GoDialer)
 	}
 
-	return d.Dial(ctx, addr)
+	conn, err := d.Dial(ctx, addr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to dial: %s", err)
+	}
+
+	return conn, nil
 }
 
 func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) {
