@@ -42,18 +42,18 @@ func (s *Server) Serve(l net.Listener) error {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to serve: %s", err)
 		}
 		go func() {
 			defer conn.Close()
 			r, err := readRequest(conn)
 			if err != nil {
-				fmt.Fprintln(conn, err)
+				fmt.Fprintf(conn, "failed to serve: %s\n", err)
 				return
 			}
 
 			if r.Method != http0_9.MethodGet {
-				fmt.Fprintln(conn, "method not allowed")
+				fmt.Fprintln(conn, "failed to serve: method not allowed")
 				return
 			}
 
