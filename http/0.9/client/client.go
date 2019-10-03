@@ -18,20 +18,21 @@ type Client struct {
 func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, error) {
 	conn, err := c.dialForRequest(ctx, r)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to do: %s", err)
 	}
 
 	if _, err := r.WriteTo(conn); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to do: %s", err)
 	}
+
 	respCh, errCh := c.receive(conn)
 	select {
 	case <-ctx.Done():
-		return nil, ctx.Err()
+		return nil, fmt.Errorf("failed to do: %s", ctx.Err())
 	case resp := <-respCh:
 		return resp, nil
 	case err := <-errCh:
-		return nil, err
+		return nil, fmt.Errorf("failed to do: %s", err)
 	}
 }
 
