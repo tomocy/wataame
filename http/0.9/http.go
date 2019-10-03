@@ -40,3 +40,22 @@ func (r *Request) Scan(state fmt.ScanState, _ rune) error {
 }
 
 type Response []byte
+
+func (r *Response) Scan(state fmt.ScanState, _ rune) error {
+	var reads []rune
+	for {
+		read, _, err := state.ReadRune()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return fmt.Errorf("failed to scan response: %s", err)
+		}
+
+		reads = append(reads, read)
+	}
+
+	*r = Response(string(reads))
+
+	return nil
+}
