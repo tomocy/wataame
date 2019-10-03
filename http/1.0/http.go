@@ -107,6 +107,10 @@ func (l *RequestLine) Scan(state fmt.ScanState, _ rune) error {
 	return nil
 }
 
+type Response interface {
+	response()
+}
+
 type SimpleResponse struct {
 	http0_9.Response
 }
