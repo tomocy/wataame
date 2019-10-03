@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
@@ -72,8 +71,8 @@ func (c *Client) receive(conn net.Conn) (<-chan http0_9.Response, <-chan error) 
 			close(errCh)
 		}()
 
-		resp, err := ioutil.ReadAll(conn)
-		if err != nil {
+		var resp http0_9.Response
+		if _, err := resp.ReadFrom(conn); err != nil {
 			errCh <- fmt.Errorf("failed to recieve: %s", err)
 			return
 		}
