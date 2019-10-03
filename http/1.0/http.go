@@ -164,6 +164,20 @@ func (h Header) String() string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 
+func (h Header) assureRequired() {
+	for k, vs := range requiredHeader {
+		if _, ok := h[k]; ok {
+			continue
+		}
+
+		h[k] = vs
+	}
+}
+
+var requiredHeader = Header{
+	"Content-Length": []string{"0"},
+}
+
 func (h Header) Scan(state fmt.ScanState, _ rune) error {
 	for {
 		read, _, err := state.ReadRune()
