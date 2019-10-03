@@ -41,6 +41,11 @@ func (r *Request) Scan(state fmt.ScanState, _ rune) error {
 
 type Response []byte
 
+func (r *Response) ReadFrom(src io.Reader) (int64, error) {
+	n, err := fmt.Fscan(src, r)
+	return int64(n), err
+}
+
 func (r *Response) Scan(state fmt.ScanState, _ rune) error {
 	var reads []rune
 	for {

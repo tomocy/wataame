@@ -51,3 +51,17 @@ func assertRequest(actual, expected *Request) error {
 
 	return nil
 }
+
+func TestResponse_ReadFrom(t *testing.T) {
+	input := "hello world"
+	expected := input
+
+	var actual Response
+	if _, err := actual.ReadFrom(strings.NewReader(input)); err != nil {
+		t.Fatalf("unexpected error from (*Response).ReadFrom: got %s, expect nil\n", err)
+		return
+	}
+	if string(actual) != expected {
+		t.Errorf("unexpected Response by (*Response).ReadFrom: got %s, expect %s\n", string(actual), expected)
+	}
+}
