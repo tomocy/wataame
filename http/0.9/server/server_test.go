@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,11 +11,13 @@ import (
 	"testing"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
+	"github.com/tomocy/wataame/http/0.9/client"
 	"github.com/tomocy/wataame/ip"
 )
 
 func TestServer_ListenAndServe(t *testing.T) {
 	addr := "localhost:12345"
+	var client client.Client
 	s := &Server{
 		Addr: addr, Handler: HandlerFunc(func(w io.Writer, r *http0_9.Request) {
 			if r.URI.Path != "/index.html" {
@@ -32,34 +35,46 @@ func TestServer_ListenAndServe(t *testing.T) {
 	}()
 
 	tests := map[string]struct {
-		method, uri string
-		expected    string
+		method   string
+		uri      func() *url.URL
+		expected string
 	}{
 		"ok": {
 			http0_9.MethodGet,
-			"http://" + filepath.Join(addr, "/index.html"),
+			func() *url.URL {
+				parsed, _ := url.Parse("http://" + filepath.Join(addr, "index.html"))
+				return parsed
+			},
 			"<h1>Hello world</h1>",
 		},
 		"not found": {
 			http0_9.MethodGet,
-			"http://" + filepath.Join(addr, "/"),
+			func() *url.URL {
+				parsed, _ := url.Parse("http://" + addr + "/")
+				return parsed
+			},
 			"not found",
 		},
 		"method not allowed": {
 			"HEAD",
-			"http://" + filepath.Join(addr, "/index.html"),
+			func() *url.URL {
+				parsed, _ := url.Parse("http://" + filepath.Join(addr, "index.html"))
+				return parsed
+			},
 			"method not allowed",
 		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			actual, err := receiveTestResponse("tcp", test.method, test.uri)
+			actual, err := client.Do(context.Background(), &http0_9.Request{
+				Method: test.method, URI: test.uri(),
+			})
 			if err != nil {
-				t.Fatalf("unexpected error from (*Server).Serve: got %s, expect nil\n", err)
+				t.Fatalf("unexpected error from (*Client).Do: got %s, expect nil\n", err)
 			}
-			if actual != test.expected {
-				t.Errorf("unexpected Response from (*Server).Serve: got %q, expect %q\n", actual, test.expected)
+			if string(actual) != test.expected {
+				t.Errorf("unexpected Response from (*Client).Do: got %q, expect %q\n", string(actual), test.expected)
 			}
 		})
 	}
