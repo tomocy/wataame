@@ -2,14 +2,13 @@ package server
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/url"
-	"os"
 	"path/filepath"
 	"testing"
 
-	http "github.com/tomocy/wataame/http"
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"github.com/tomocy/wataame/ip"
 )
@@ -17,9 +16,14 @@ import (
 func TestServer_ListenAndServe(t *testing.T) {
 	addr := "localhost:12345"
 	s := &Server{
-		Addr: addr, Handler: &FileServer{
-			Root: http.Dir(filepath.Join(os.Getenv("GOPATH"), "src/github.com/tomocy/wataame/testdata")),
-		},
+		Addr: addr, Handler: HandlerFunc(func(w io.Writer, r *http0_9.Request) {
+			if r.URI.Path != "/index.html" {
+				fmt.Fprint(w, "not found")
+				return
+			}
+
+			fmt.Fprint(w, "<h1>Hello world</h1>")
+		}),
 	}
 	go func() {
 		if err := s.ListenAndServe(); err != nil {
