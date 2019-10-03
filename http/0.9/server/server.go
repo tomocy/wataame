@@ -3,7 +3,6 @@ package server
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -83,11 +82,11 @@ func readRequest(conn net.Conn) (*http0_9.Request, error) {
 func parseRequest(bs []byte) (*http0_9.Request, error) {
 	splited := strings.Split(string(bs), " ")
 	if len(splited) < 2 {
-		return nil, errors.New("invalid format of request: missing space between method and uri")
+		return nil, fmt.Errorf("failed to parse request: invalid format of request: got %s, expect method uri", string(bs))
 	}
 	uri, err := url.Parse("http://" + splited[1])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse request: %s", err)
 	}
 
 	return &http0_9.Request{
