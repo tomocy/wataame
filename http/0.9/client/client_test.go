@@ -1,44 +1,34 @@
 package client
 
 import (
-	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"net/url"
-	"path/filepath"
 	"testing"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
-	"golang.org/x/net/nettest"
+	"github.com/tomocy/wataame/http/0.9/server"
 )
 
 func TestClient_Do(t *testing.T) {
-	l, err := nettest.NewLocalListener("tcp")
-	if err != nil {
-		t.Fatalf("unexpected error from nettest.NewLocalListener: got %s, expect nil\n", err)
+	addr := ":1234"
+	serv := &server.Server{
+		Addr: addr, Handler: server.HandlerFunc(func(w io.Writer, r *http0_9.Request) {
+			r.WriteTo(w)
+		}),
 	}
-	defer l.Close()
 	go func() {
-		conn, err := l.Accept()
-		if err != nil {
-			t.Fatalf("unexpected error from (*Listener).Accept: got %s, expect nil\n", err)
+		if err := serv.ListenAndServe(); err != nil {
+			t.Fatalf("unexpected error from (*Server).ListenAndServe: got %s, expect nil\n", err)
 		}
-		defer conn.Close()
-
-		r := bufio.NewReader(conn)
-		read, _, err := r.ReadLine()
-		if err != nil {
-			t.Fatalf("unexpected error from (*Reader).ReadLine: got %s, expect nil\n", err)
-		}
-
-		fmt.Fprintln(conn, string(read))
 	}()
 
 	path := "/index.html"
 	expected := fmt.Sprintf("%s %s\n", http0_9.MethodGet, path)
 
 	var client Client
-	uri, _ := url.Parse("http://" + filepath.Join(l.Addr().String(), path))
+	uri, _ := url.Parse("http://localhost" + addr + path)
 	resp, err := client.Do(context.Background(), &http0_9.Request{
 		Method: http0_9.MethodGet, URI: uri,
 	})
