@@ -19,6 +19,10 @@ const (
 	MethodPost = "POST"
 )
 
+type Request interface {
+	request()
+}
+
 type SimpleRequest struct {
 	http0_9.Request
 }
