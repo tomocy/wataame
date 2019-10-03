@@ -96,3 +96,5 @@ func (s *FileServer) Handle(w io.Writer, r *http0_9.Request) {
 type Handler interface {
 	Handle(io.Writer, *http0_9.Request)
 }
+
+type HandlerFunc func(io.Writer, *http0_9.Request)
