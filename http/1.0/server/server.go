@@ -9,3 +9,5 @@ import (
 type Handler interface {
 	Handle(io.Writer, http1_0.Request)
 }
+
+type HandlerFunc func(io.Writer, http1_0.Request)
