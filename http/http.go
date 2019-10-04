@@ -3,6 +3,7 @@ package http
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"net/url"
 	"os"
@@ -24,6 +25,15 @@ type FileSystem interface {
 type PeekableConn struct {
 	net.Conn
 	r *bufio.Reader
+}
+
+func (c *PeekableConn) Read(dst []byte) (int, error) {
+	var r io.Reader = c.Conn
+	if c.r != nil {
+		r = c.r
+	}
+
+	return r.Read(dst)
 }
 
 type ScannableURL url.URL
