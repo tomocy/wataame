@@ -46,6 +46,10 @@ func (r *Response) Write(src []byte) (int, error) {
 	return len(src), nil
 }
 
+func (r Response) String() string {
+	return string(r)
+}
+
 func (r *Response) ReadFrom(src io.Reader) (int64, error) {
 	n, err := fmt.Fscan(src, r)
 	return int64(n), err
