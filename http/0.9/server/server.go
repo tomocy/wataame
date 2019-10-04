@@ -49,6 +49,7 @@ func (s *Server) Serve(l net.Listener) error {
 		if err != nil {
 			return fmt.Errorf("failed to serve: %s", err)
 		}
+
 		go s.handle(conn)
 	}
 }

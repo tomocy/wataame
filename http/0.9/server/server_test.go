@@ -22,7 +22,7 @@ func TestServer_ListenAndServe(t *testing.T) {
 				return
 			}
 
-			fmt.Fprint(w, "<h1>Hello world</h1>")
+			fmt.Fprint(w, "hello world")
 		}),
 	}
 	go s.ListenAndServe()
@@ -38,7 +38,7 @@ func TestServer_ListenAndServe(t *testing.T) {
 					return parsed
 				}(),
 			},
-			"<h1>Hello world</h1>",
+			"hello world",
 		},
 		"not found": {
 			&http0_9.Request{
