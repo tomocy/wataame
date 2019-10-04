@@ -4,15 +4,12 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"net"
 	"net/url"
 	"path/filepath"
 	"testing"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"github.com/tomocy/wataame/http/0.9/client"
-	"github.com/tomocy/wataame/ip"
 )
 
 func TestServer_ListenAndServe(t *testing.T) {
@@ -74,28 +71,4 @@ func TestServer_ListenAndServe(t *testing.T) {
 			}
 		})
 	}
-}
-
-func receiveTestResponse(network, method, uri string) (string, error) {
-	parsed, err := url.Parse(uri)
-	if err != nil {
-		return "", err
-	}
-	addr, err := ip.Addr(parsed.Host).Compensate()
-	if err != nil {
-		return "", err
-	}
-	conn, err := net.Dial(network, addr)
-	if err != nil {
-		return "", err
-	}
-	defer conn.Close()
-
-	fmt.Fprintf(conn, "%s %s\n", method, filepath.Join(addr, parsed.Path))
-	resp, err := ioutil.ReadAll(conn)
-	if err != nil {
-		return "", err
-	}
-
-	return string(resp), nil
 }
