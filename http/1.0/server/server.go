@@ -12,3 +12,7 @@ type SimpleHandler interface {
 }
 
 type SimpleHandlerFunc func(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
+
+func (f SimpleHandlerFunc) Handle(resp *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
+	f(resp, req)
+}
