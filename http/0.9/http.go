@@ -46,6 +46,11 @@ func (r *Response) Write(src []byte) (int, error) {
 	return len(src), nil
 }
 
+func (r *Response) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprint(w, r)
+	return int64(n), err
+}
+
 func (r Response) String() string {
 	return string(r)
 }
