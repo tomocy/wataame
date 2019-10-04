@@ -55,6 +55,7 @@ func (s *Server) Serve(l net.Listener) error {
 
 func (s *Server) handle(conn net.Conn) {
 	defer conn.Close()
+
 	peekable := &http.PeekableConn{
 		Conn: conn,
 	}
@@ -76,6 +77,7 @@ func (s *Server) handle(conn net.Conn) {
 
 func (s *Server) handleSimpleRequest(conn net.Conn) {
 	defer conn.Close()
+
 	if s.SimpleHandler == nil {
 		fmt.Fprintln(conn, "failed to handle simple request: handler is not set")
 		return
