@@ -76,6 +76,11 @@ func (s *Server) handle(conn net.Conn) {
 
 func (s *Server) handleSimpleRequest(conn net.Conn) {
 	defer conn.Close()
+	if s.SimpleHandler == nil {
+		fmt.Fprintln(conn, "failed to handle simple request: handler is not set")
+		return
+	}
+
 	req := new(http1_0.SimpleRequest)
 	if _, err := req.ReadFrom(conn); err != nil {
 		fmt.Fprintf(conn, "failed to handle simple request: %s", err)
