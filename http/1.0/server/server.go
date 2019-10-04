@@ -6,6 +6,11 @@ import (
 	http1_0 "github.com/tomocy/wataame/http/1.0"
 )
 
+type Server struct {
+	Addr    string
+	Handler Handler
+}
+
 type Handler interface {
 	Handle(io.Writer, http1_0.Request)
 }
