@@ -48,6 +48,7 @@ func (s *Server) Serve(l net.Listener) error {
 		if err != nil {
 			return fmt.Errorf("failed to serve: %s", err)
 		}
+
 		go s.handle(conn)
 	}
 }
@@ -60,7 +61,7 @@ func (s *Server) handle(conn net.Conn) {
 	v, err := http.DetectVersion(peekable)
 
 	if err != nil {
-		fmt.Fprintf(peekable, "failed to handle: %s\n", err)
+		fmt.Fprintf(peekable, "failed to handle: %s", err)
 		return
 	}
 
@@ -68,7 +69,7 @@ func (s *Server) handle(conn net.Conn) {
 	case "0.9":
 		s.handleSimpleRequest(peekable)
 	default:
-		fmt.Fprintf(conn, "failed to handle: unsupported HTTP version: %s\n", v)
+		fmt.Fprintf(conn, "failed to handle: unsupported HTTP version: %s", v)
 		return
 	}
 }
