@@ -10,3 +10,5 @@ type Server struct {
 type SimpleHandler interface {
 	Handle(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
 }
+
+type SimpleHandlerFunc func(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
