@@ -3,7 +3,8 @@ package server
 import http1_0 "github.com/tomocy/wataame/http/1.0"
 
 type Server struct {
-	Addr string
+	Addr          string
+	SimpleHandler SimpleHandler
 }
 
 type SimpleHandler interface {
