@@ -23,6 +23,23 @@ type FileSystem interface {
 	Open(string) (*os.File, error)
 }
 
+func DetectVersion(conn *PeekableConn) (string, error) {
+	line, err := conn.PeekLine()
+	if err != nil {
+		return "", fmt.Errorf("failed to detect version: %s", err)
+	}
+
+	idx := strings.LastIndex(line, "HTTP/")
+	if idx < 0 {
+		return "0.9", nil
+	}
+	if len(line) <= idx+5 {
+		return "", fmt.Errorf("failed to detect version: invalid format of HTTP version: got %s, expect HTTP/majour.minor", line[idx:])
+	}
+
+	return line[idx+5:], nil
+}
+
 type PeekableConn struct {
 	net.Conn
 	r *bufio.Reader
