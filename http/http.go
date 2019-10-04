@@ -1,7 +1,9 @@
 package http
 
 import (
+	"bufio"
 	"fmt"
+	"net"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -17,6 +19,11 @@ func (d Dir) Open(name string) (*os.File, error) {
 
 type FileSystem interface {
 	Open(string) (*os.File, error)
+}
+
+type PeekableConn struct {
+	net.Conn
+	r *bufio.Reader
 }
 
 type ScannableURL url.URL
