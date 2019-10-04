@@ -60,15 +60,31 @@ func (s *Server) handle(conn net.Conn) {
 	v, err := http.DetectVersion(peekable)
 
 	if err != nil {
-		fmt.Fprintf(conn, "failed to handle: %s\n", err)
+		fmt.Fprintf(peekable, "failed to handle: %s\n", err)
 		return
 	}
 
 	switch v {
+	case "0.9":
+		s.handleSimpleRequest(peekable)
 	default:
 		fmt.Fprintf(conn, "failed to handle: unsupported HTTP version: %s\n", v)
 		return
 	}
+}
+
+func (s *Server) handleSimpleRequest(conn net.Conn) {
+	defer conn.Close()
+	req := new(http1_0.SimpleRequest)
+	if _, err := req.ReadFrom(conn); err != nil {
+		fmt.Fprintf(conn, "failed to handle simple request: %s", err)
+		return
+	}
+
+	resp := new(http1_0.SimpleResponse)
+	s.SimpleHandler.Handle(resp, req)
+
+	resp.WriteTo(conn)
 }
 
 type SimpleHandler interface {
