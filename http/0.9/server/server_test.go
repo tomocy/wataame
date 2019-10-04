@@ -28,11 +28,7 @@ func TestServer_ListenAndServe(t *testing.T) {
 			fmt.Fprint(w, "<h1>Hello world</h1>")
 		}),
 	}
-	go func() {
-		if err := s.ListenAndServe(); err != nil {
-			t.Fatalf("unexpected error from (*Server).ListenAndServe: got %s, expect nil\n", err)
-		}
-	}()
+	go s.ListenAndServe()
 
 	tests := map[string]struct {
 		method   string

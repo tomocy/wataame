@@ -24,16 +24,14 @@ func TestClient_Do(t *testing.T) {
 func testClient_DoSimpleRequest(t *testing.T) {
 	addr := ":1234"
 	uri, _ := url.Parse("http://localhost" + addr + "/index.html")
+	var client Client
 	serv := &server.Server{
 		Addr: addr,
 		Handler: server.HandlerFunc(func(w io.Writer, r *http0_9.Request) {
 			r.WriteTo(w)
 		}),
 	}
-	go func() {
-		serv.ListenAndServe()
-	}()
-	var client Client
+	go serv.ListenAndServe()
 
 	input := &http1_0.SimpleRequest{
 		Request: http0_9.Request{
