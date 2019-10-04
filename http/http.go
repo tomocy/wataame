@@ -2,6 +2,7 @@ package http
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"net"
@@ -25,6 +26,22 @@ type FileSystem interface {
 type PeekableConn struct {
 	net.Conn
 	r *bufio.Reader
+}
+
+func (c *PeekableConn) PeekLine() (string, error) {
+	c.r = bufio.NewReader(c.Conn)
+	var (
+		peeked []byte
+		err    error
+	)
+	for i := 1; i < c.r.Size(); i++ {
+		peeked, err = c.r.Peek(i)
+		if err != nil || bytes.HasSuffix(peeked, []byte{'\n'}) {
+			break
+		}
+	}
+
+	return string(peeked), err
 }
 
 func (c *PeekableConn) Read(dst []byte) (int, error) {
