@@ -49,22 +49,24 @@ func (s *Server) Serve(l net.Listener) error {
 		if err != nil {
 			return fmt.Errorf("failed to serve: %s", err)
 		}
-		go func() {
-			defer conn.Close()
-			r := new(http0_9.Request)
-			if _, err := r.ReadFrom(conn); err != nil {
-				fmt.Fprintf(conn, "failed to serve: %s\n", err)
-				return
-			}
-
-			if r.Method != http0_9.MethodGet {
-				fmt.Fprint(conn, "method not allowed")
-				return
-			}
-
-			s.Handler.Handle(conn, r)
-		}()
+		go s.handle(conn)
 	}
+}
+
+func (s *Server) handle(conn net.Conn) {
+	defer conn.Close()
+	r := new(http0_9.Request)
+	if _, err := r.ReadFrom(conn); err != nil {
+		fmt.Fprintf(conn, "failed to serve: %s\n", err)
+		return
+	}
+
+	if r.Method != http0_9.MethodGet {
+		fmt.Fprint(conn, "method not allowed")
+		return
+	}
+
+	s.Handler.Handle(conn, r)
 }
 
 type FileServer struct {
