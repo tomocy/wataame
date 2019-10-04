@@ -13,7 +13,7 @@ import (
 
 func TestClient_Do(t *testing.T) {
 	testers := map[string]func(t *testing.T){
-		"simple request": testClient_DoSimpleRequest,
+		"simple request": testClientDoSimpleRequest,
 	}
 
 	for name, tester := range testers {
@@ -21,7 +21,7 @@ func TestClient_Do(t *testing.T) {
 	}
 }
 
-func testClient_DoSimpleRequest(t *testing.T) {
+func testClientDoSimpleRequest(t *testing.T) {
 	addr := ":1234"
 	uri, _ := url.Parse("http://localhost" + addr + "/index.html")
 	var client Client
