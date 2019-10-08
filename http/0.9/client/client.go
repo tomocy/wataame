@@ -35,7 +35,7 @@ func (c *Client) Do(ctx context.Context, r *http0_9.Request) (http0_9.Response, 
 	}
 }
 
-func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (tcp.Conn, error) {
+func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (net.Conn, error) {
 	addr, err := ip.Addr(r.URI.Host).Compensate()
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial for request: %s", err)
@@ -49,7 +49,7 @@ func (c *Client) dialForRequest(ctx context.Context, r *http0_9.Request) (tcp.Co
 	return conn, nil
 }
 
-func (c *Client) dial(ctx context.Context, addr string) (tcp.Conn, error) {
+func (c *Client) dial(ctx context.Context, addr string) (net.Conn, error) {
 	d := c.Dialer
 	if d == nil {
 		d = new(tcp.GoDialer)
