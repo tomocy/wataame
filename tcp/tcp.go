@@ -11,6 +11,10 @@ type Dialer interface {
 
 type DialerFunc func(context.Context, string) (net.Conn, error)
 
+func (f DialerFunc) Dial(ctx context.Context, addr string) (net.Conn, error) {
+	return f(ctx, addr)
+}
+
 type GoDialer struct {
 	net.Dialer
 }
