@@ -100,6 +100,11 @@ type Handler interface {
 	SimpleHandler
 }
 
+type HandlerFunc struct {
+	FullHandlerFunc
+	SimpleHandlerFunc
+}
+
 type FullHandler interface {
 	HandleFullRequest(*http1_0.FullResponse, *http1_0.FullRequest)
 }
