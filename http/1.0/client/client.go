@@ -22,7 +22,7 @@ func (c *Client) Do(ctx context.Context, r http1_0.Request) (http1_0.Response, e
 		}
 		return resp, nil
 	default:
-		panic(fmt.Sprintf("failed to do: unsupported request type: %T", r))
+		return nil, fmt.Errorf("failed to do: unsupported request type: %T", r)
 	}
 }
 
