@@ -101,6 +101,10 @@ type FullHandler interface {
 
 type FullHandlerFunc func(*http1_0.FullResponse, *http1_0.FullRequest)
 
+func (f FullHandlerFunc) HandleFullRequest(resp *http1_0.FullResponse, req *http1_0.FullRequest) {
+	f(resp, req)
+}
+
 type SimpleHandler interface {
 	HandleSimpleRequest(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
 }
