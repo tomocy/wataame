@@ -29,14 +29,16 @@ func testServerHandleSimpleRequest(t *testing.T) {
 	var client client.Client
 	serv := &Server{
 		Addr: addr,
-		SimpleHandler: SimpleHandlerFunc(func(resp *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
-			if req.Method != http.MethodGet || req.URI.Path != "/index.html" {
-				fmt.Fprint(resp, "not found")
-				return
-			}
+		Handler: &HandlerFunc{
+			SimpleHandlerFunc: func(resp *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
+				if req.Method != http.MethodGet || req.URI.Path != "/index.html" {
+					fmt.Fprint(resp, "not found")
+					return
+				}
 
-			fmt.Fprint(resp, "hello world")
-		}),
+				fmt.Fprint(resp, "hello world")
+			},
+		},
 	}
 	go serv.ListenAndServe()
 	time.Sleep(1 * time.Second)

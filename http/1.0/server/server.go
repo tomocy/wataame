@@ -10,8 +10,8 @@ import (
 )
 
 type Server struct {
-	Addr          string
-	SimpleHandler SimpleHandler
+	Addr    string
+	Handler Handler
 }
 
 func (s *Server) ListenAndServe() error {
@@ -78,7 +78,7 @@ func (s *Server) handle(conn net.Conn) {
 func (s *Server) handleSimpleRequest(conn net.Conn) {
 	defer conn.Close()
 
-	if s.SimpleHandler == nil {
+	if s.Handler == nil {
 		fmt.Fprintln(conn, "failed to handle simple request: handler is not set")
 		return
 	}
@@ -90,7 +90,7 @@ func (s *Server) handleSimpleRequest(conn net.Conn) {
 	}
 
 	resp := new(http1_0.SimpleResponse)
-	s.SimpleHandler.HandleSimpleRequest(resp, req)
+	s.Handler.HandleSimpleRequest(resp, req)
 
 	resp.WriteTo(conn)
 }
