@@ -90,17 +90,17 @@ func (s *Server) handleSimpleRequest(conn net.Conn) {
 	}
 
 	resp := new(http1_0.SimpleResponse)
-	s.SimpleHandler.Handle(resp, req)
+	s.SimpleHandler.HandleSimpleRequest(resp, req)
 
 	resp.WriteTo(conn)
 }
 
 type SimpleHandler interface {
-	Handle(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
+	HandleSimpleRequest(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
 }
 
 type SimpleHandlerFunc func(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
 
-func (f SimpleHandlerFunc) Handle(resp *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
+func (f SimpleHandlerFunc) HandleSimpleRequest(resp *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
 	f(resp, req)
 }
