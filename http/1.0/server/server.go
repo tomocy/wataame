@@ -95,6 +95,10 @@ func (s *Server) handleSimpleRequest(conn net.Conn) {
 	resp.WriteTo(conn)
 }
 
+type FullHandler interface {
+	HandleFullRequest(*http1_0.FullResponse, *http1_0.FullRequest)
+}
+
 type SimpleHandler interface {
 	HandleSimpleRequest(*http1_0.SimpleResponse, *http1_0.SimpleRequest)
 }
