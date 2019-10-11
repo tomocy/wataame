@@ -332,6 +332,23 @@ var listableHeaders = []string{
 	"Allow", "WWW-Authenticate",
 }
 
+func search(vs []string, x string) bool {
+	begin, end := 0, len(vs)-1
+	for begin <= end {
+		mid := (begin + end) / 2
+		if vs[mid] == x {
+			return true
+		}
+		if vs[mid] < x {
+			begin = mid + 1
+		} else {
+			end = mid - 1
+		}
+	}
+
+	return false
+}
+
 func willBeEOF(r io.RuneScanner) bool {
 	_, _, err := r.ReadRune()
 	r.UnreadRune()
