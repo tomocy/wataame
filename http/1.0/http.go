@@ -312,20 +312,7 @@ func (f *headerField) scanValues(r io.RuneReader) error {
 
 func (f *headerField) isListable() bool {
 	sort.Strings(listableHeaders)
-	begin, end := 0, len(listableHeaders)-1
-	for begin <= end {
-		mid := (begin + end) / 2
-		if listableHeaders[mid] == f.key {
-			return true
-		}
-		if listableHeaders[mid] < f.key {
-			begin = mid + 1
-		} else {
-			end = mid - 1
-		}
-	}
-
-	return false
+	return search(listableHeaders, f.key)
 }
 
 var listableHeaders = []string{
