@@ -200,6 +200,17 @@ func (h Header) String() string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 
+func (h Header) names() []string {
+	ns := make([]string, len(h))
+	var i int
+	for n := range h {
+		ns[i] = n
+		i++
+	}
+
+	return ns
+}
+
 func (h Header) assureRequired() {
 	for k, vs := range requiredHeader {
 		if _, ok := h[k]; ok {
