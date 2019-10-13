@@ -352,6 +352,10 @@ type headerFieldName struct {
 	kind int
 }
 
+const (
+	headerEntity = iota
+)
+
 func willBeEOF(r io.RuneScanner) bool {
 	_, _, err := r.ReadRune()
 	r.UnreadRune()
