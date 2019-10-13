@@ -347,6 +347,11 @@ func search(vs []string, x string) bool {
 	return false
 }
 
+type headerFieldName struct {
+	name string
+	kind int
+}
+
 func willBeEOF(r io.RuneScanner) bool {
 	_, _, err := r.ReadRune()
 	r.UnreadRune()
