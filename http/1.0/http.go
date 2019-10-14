@@ -355,6 +355,7 @@ type headerFieldName struct {
 const (
 	headerEntity = iota
 	headerRequest
+	headerResponse
 )
 
 func willBeEOF(r io.RuneScanner) bool {
