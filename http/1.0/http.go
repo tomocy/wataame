@@ -356,6 +356,7 @@ const (
 	headerEntity = iota
 	headerRequest
 	headerResponse
+	headerGeneral
 )
 
 func willBeEOF(r io.RuneScanner) bool {
