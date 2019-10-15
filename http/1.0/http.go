@@ -377,9 +377,9 @@ const (
 	headerGeneral
 )
 
-func willBeEOF(r io.RuneScanner) bool {
-	_, _, err := r.ReadRune()
-	r.UnreadRune()
+func willBeEOF(s io.RuneScanner) bool {
+	_, _, err := s.ReadRune()
+	s.UnreadRune()
 	return err == io.EOF
 }
 
