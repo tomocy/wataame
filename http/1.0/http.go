@@ -349,6 +349,22 @@ func search(vs []string, x string) bool {
 
 type headerFieldNames []headerFieldName
 
+func (ns headerFieldNames) Len() int {
+	return len(ns)
+}
+
+func (ns headerFieldNames) Less(i, j int) bool {
+	if ns[i].kind != ns[j].kind {
+		return ns[j].kind < ns[i].kind
+	}
+
+	return ns[i].name < ns[j].name
+}
+
+func (ns headerFieldNames) Swap(i, j int) {
+	ns[i], ns[j] = ns[j], ns[i]
+}
+
 type headerFieldName struct {
 	name string
 	kind int
