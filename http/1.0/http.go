@@ -347,6 +347,8 @@ func search(vs []string, x string) bool {
 	return false
 }
 
+type headerFieldNames []headerFieldName
+
 type headerFieldName struct {
 	name string
 	kind int
