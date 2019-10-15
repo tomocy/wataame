@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/url"
 	"testing"
-	"time"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"github.com/tomocy/wataame/http/0.9/server"
@@ -33,7 +32,6 @@ func testClientDoSimpleRequest(t *testing.T) {
 		}),
 	}
 	go serv.ListenAndServe()
-	time.Sleep(1 * time.Second)
 
 	input := &http1_0.SimpleRequest{
 		Request: http0_9.Request{

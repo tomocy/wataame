@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"path/filepath"
 	"testing"
-	"time"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	http1_0 "github.com/tomocy/wataame/http/1.0"
@@ -41,7 +40,6 @@ func testServerHandleSimpleRequest(t *testing.T) {
 		},
 	}
 	go serv.ListenAndServe()
-	time.Sleep(1 * time.Second)
 
 	tests := map[string]struct {
 		input    http1_0.Request
