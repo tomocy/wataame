@@ -377,6 +377,10 @@ const (
 	headerGeneral
 )
 
+var generalHeaders = []string{
+	"Date", "Pragma",
+}
+
 func willBeEOF(s io.RuneScanner) bool {
 	_, _, err := s.ReadRune()
 	s.UnreadRune()
