@@ -166,6 +166,10 @@ type StatusLine struct {
 	Status  *Status
 }
 
+func (l StatusLine) String() string {
+	return fmt.Sprintf("%s %s", l.Version, l.Status)
+}
+
 type Version struct {
 	Major, Minor int
 }
