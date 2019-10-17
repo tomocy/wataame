@@ -385,6 +385,10 @@ var requestHeader = []string{
 	"Authorization", "From", "If-Modified-Since", "Referer", "User-Agent",
 }
 
+var responseHeader = []string{
+	"Location", "Server", "WWW-Authenticate",
+}
+
 func willBeEOF(s io.RuneScanner) bool {
 	_, _, err := s.ReadRune()
 	s.UnreadRune()
