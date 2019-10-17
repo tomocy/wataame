@@ -37,7 +37,7 @@ func DetectVersion(conn *PeekableConn) (string, error) {
 		return "", fmt.Errorf("failed to detect version: invalid format of HTTP version: got %s, expect HTTP/majour.minor", line[idx:])
 	}
 
-	return line[idx+5:], nil
+	return strings.TrimRight(line[idx+5:], "\n"), nil
 }
 
 type PeekableConn struct {
