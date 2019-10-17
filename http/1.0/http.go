@@ -187,6 +187,10 @@ type Status struct {
 	Phrase string
 }
 
+func (s Status) String() string {
+	return fmt.Sprintf("%d %s", s.Code, s.Phrase)
+}
+
 type Header map[string][]string
 
 func (h Header) String() string {
