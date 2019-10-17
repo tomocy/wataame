@@ -2,13 +2,12 @@ package client
 
 import (
 	"context"
-	"io"
 	"net/url"
 	"testing"
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
-	"github.com/tomocy/wataame/http/0.9/server"
 	http1_0 "github.com/tomocy/wataame/http/1.0"
+	"github.com/tomocy/wataame/http/1.0/server"
 )
 
 func TestClient_Do(t *testing.T) {
@@ -27,9 +26,11 @@ func testClientDoSimpleRequest(t *testing.T) {
 	var client Client
 	serv := &server.Server{
 		Addr: addr,
-		Handler: server.HandlerFunc(func(w io.Writer, r *http0_9.Request) {
-			r.WriteTo(w)
-		}),
+		Handler: server.HandlerFunc{
+			SimpleHandlerFunc: func(res *http1_0.SimpleResponse, req *http1_0.SimpleRequest) {
+				req.WriteTo(res)
+			},
+		},
 	}
 	go serv.ListenAndServe()
 
