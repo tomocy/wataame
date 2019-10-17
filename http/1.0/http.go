@@ -381,6 +381,10 @@ var generalHeaders = []string{
 	"Date", "Pragma",
 }
 
+var requestHeader = []string{
+	"Authorization", "From", "If-Modified-Since", "Referer", "User-Agent",
+}
+
 func willBeEOF(s io.RuneScanner) bool {
 	_, _, err := s.ReadRune()
 	s.UnreadRune()
