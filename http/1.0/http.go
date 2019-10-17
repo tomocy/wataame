@@ -161,6 +161,27 @@ type FullResponse struct {
 	Body       io.ReadCloser
 }
 
+func (r FullResponse) String() string {
+	var b strings.Builder
+	fmt.Fprintln(&b, r.StatusLine)
+	fmt.Fprintln(&b, r.Header)
+	fmt.Fprintln(&b)
+	if r.Body != nil {
+		teed := r.teeBody()
+		io.Copy(&b, teed)
+	}
+
+	return b.String()
+}
+
+func (r *FullResponse) teeBody() io.Reader {
+	var b bytes.Buffer
+	teed := io.TeeReader(r.Body, &b)
+	r.Body = ioutil.NopCloser(&b)
+
+	return teed
+}
+
 type StatusLine struct {
 	Version *Version
 	Status  *Status
