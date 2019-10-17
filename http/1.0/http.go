@@ -181,6 +181,11 @@ func (r *FullResponse) teeBody() io.Reader {
 	return teed
 }
 
+func (r *FullResponse) ReadFrom(src io.Reader) (int64, error) {
+	n, err := fmt.Fscan(src, r)
+	return int64(n), err
+}
+
 func (r *FullResponse) Scan(state fmt.ScanState, _ rune) error {
 	r.StatusLine, r.Header = new(StatusLine), make(Header)
 	if _, err := fmt.Fscanln(state, r.StatusLine); err != nil {
