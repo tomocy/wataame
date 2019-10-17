@@ -114,11 +114,10 @@ func (r *FullRequest) Scan(state fmt.ScanState, _ rune) error {
 		return fmt.Errorf("failed to scan full request: %s", err)
 	}
 	if !willBeEOF(state) {
-		var body body
-		if _, err := fmt.Fscan(state, &body); err != nil {
-			return fmt.Errorf("failed to scan full request: %s", err)
+		r.Body = new(body)
+		if _, err := fmt.Fscan(state, r.Body); err != nil {
+			return fmt.Errorf("failed to scan full response: %s", err)
 		}
-		r.Body = &body
 	}
 
 	return nil
@@ -194,11 +193,10 @@ func (r *FullResponse) Scan(state fmt.ScanState, _ rune) error {
 		return fmt.Errorf("failed to scan full response: %s", err)
 	}
 	if !willBeEOF(state) {
-		var body body
-		if _, err := fmt.Fscan(state, &body); err != nil {
+		r.Body = new(body)
+		if _, err := fmt.Fscan(state, r.Body); err != nil {
 			return fmt.Errorf("failed to scan full response: %s", err)
 		}
-		r.Body = &body
 	}
 
 	return nil
