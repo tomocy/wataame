@@ -61,8 +61,8 @@ Content-Length: 0
 				}.Encode())),
 			},
 			expected: `POST /index.html HTTP/1.0
-Content-Type: application/x-www-form-urlencoded
 Content-Length: 21
+Content-Type: application/x-www-form-urlencoded
 
 name=foo&password=bar`,
 		},

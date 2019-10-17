@@ -191,9 +191,11 @@ type Header map[string][]string
 
 func (h Header) String() string {
 	var b strings.Builder
-	for k, vs := range h {
-		for _, v := range vs {
-			fmt.Fprintf(&b, "%s: %s\n", k, v)
+	ns := h.names()
+	sort.Sort(ns)
+	for _, n := range ns {
+		for _, v := range h[n.name] {
+			fmt.Fprintf(&b, "%s: %s\n", n.name, v)
 		}
 	}
 
