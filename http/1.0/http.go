@@ -160,6 +160,8 @@ type FullResponse struct {
 	Body       io.ReadCloser
 }
 
+func (r *FullResponse) response() {}
+
 func (r FullResponse) String() string {
 	var b strings.Builder
 	fmt.Fprintln(&b, r.StatusLine)
