@@ -200,11 +200,25 @@ func (h Header) String() string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 
-func (h Header) names() []string {
-	ns := make([]string, len(h))
+func (h Header) names() headerFieldNames {
+	ns := make(headerFieldNames, len(h))
 	var i int
 	for n := range h {
-		ns[i] = n
+		var kind int
+		switch {
+		case search(generalHeaders, n):
+			kind = headerGeneral
+		case search(responseHeader, n):
+			kind = headerResponse
+		case search(requestHeader, n):
+			kind = headerRequest
+		default:
+			kind = headerEntity
+		}
+
+		ns[i] = headerFieldName{
+			name: n, kind: kind,
+		}
 		i++
 	}
 
@@ -363,6 +377,15 @@ func (ns headerFieldNames) Less(i, j int) bool {
 
 func (ns headerFieldNames) Swap(i, j int) {
 	ns[i], ns[j] = ns[j], ns[i]
+}
+
+func (ns headerFieldNames) names() []string {
+	names := make([]string, len(ns))
+	for i, n := range ns {
+		names[i] = n.name
+	}
+
+	return names
 }
 
 type headerFieldName struct {
