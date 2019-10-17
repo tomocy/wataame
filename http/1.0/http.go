@@ -377,16 +377,16 @@ const (
 	headerGeneral
 )
 
-var generalHeaders = []string{
-	"Date", "Pragma",
-}
-
 var requestHeader = []string{
 	"Authorization", "From", "If-Modified-Since", "Referer", "User-Agent",
 }
 
 var responseHeader = []string{
 	"Location", "Server", "WWW-Authenticate",
+}
+
+var generalHeaders = []string{
+	"Date", "Pragma",
 }
 
 func willBeEOF(s io.RuneScanner) bool {
