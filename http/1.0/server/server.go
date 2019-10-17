@@ -70,8 +70,7 @@ func (s *Server) handle(conn net.Conn) {
 	case "0.9":
 		s.handleSimpleRequest(peekable)
 	default:
-		fmt.Fprintf(conn, "failed to handle: unsupported HTTP version: %s", v)
-		return
+		panic(fmt.Sprintf("failed to handle: unsupported HTTP version: %s", v))
 	}
 }
 
