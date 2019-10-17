@@ -182,6 +182,28 @@ func (r *FullResponse) teeBody() io.Reader {
 	return teed
 }
 
+func (r *FullResponse) Scan(state fmt.ScanState, _ rune) error {
+	r.StatusLine, r.Header = new(StatusLine), make(Header)
+	if _, err := fmt.Fscanln(state, r.StatusLine); err != nil {
+		return fmt.Errorf("failed to scan full response: %s", err)
+	}
+	if _, err := fmt.Fscan(state, r.Header); err != nil {
+		return fmt.Errorf("failed to scan full response: %s", err)
+	}
+	if _, _, err := state.ReadRune(); err != nil {
+		return fmt.Errorf("failed to scan full response: %s", err)
+	}
+	if !willBeEOF(state) {
+		var body body
+		if _, err := fmt.Fscan(state, &body); err != nil {
+			return fmt.Errorf("failed to scan full response: %s", err)
+		}
+		r.Body = &body
+	}
+
+	return nil
+}
+
 type StatusLine struct {
 	Version *Version
 	Status  *Status
