@@ -377,6 +377,10 @@ const (
 	headerGeneral
 )
 
+var entityHeader = []string{
+	"Allow", "Content-Encoding", "Content-Length", "Content-Type", "Expires", "Last-Modified",
+}
+
 var requestHeader = []string{
 	"Authorization", "From", "If-Modified-Since", "Referer", "User-Agent",
 }
