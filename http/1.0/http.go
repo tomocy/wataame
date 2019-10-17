@@ -191,6 +191,14 @@ func (s Status) String() string {
 	return fmt.Sprintf("%d %s", s.Code, s.Phrase)
 }
 
+func (s *Status) Scan(state fmt.ScanState, _ rune) error {
+	if _, err := fmt.Fscanf(state, "%d %s", &s.Code, &s.Phrase); err != nil {
+		return fmt.Errorf("failed to scan status: %s", err)
+	}
+
+	return nil
+}
+
 type Header map[string][]string
 
 func (h Header) String() string {
