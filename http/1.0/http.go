@@ -35,6 +35,8 @@ type FullRequest struct {
 	Body        io.ReadCloser
 }
 
+func (r *FullRequest) request() {}
+
 func (r *FullRequest) WriteTo(dst io.Writer) (int64, error) {
 	r.assureRequiredHeader()
 	n, err := fmt.Fprint(dst, r)
