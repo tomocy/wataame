@@ -170,6 +170,15 @@ func (l StatusLine) String() string {
 	return fmt.Sprintf("%s %s", l.Version, l.Status)
 }
 
+func (l *StatusLine) Scan(state fmt.ScanState, _ rune) error {
+	l.Version, l.Status = new(Version), new(Status)
+	if _, err := fmt.Fscan(state, l.Version, l.Status); err != nil {
+		return fmt.Errorf("failed to scan status line: %s", err)
+	}
+
+	return nil
+}
+
 type Version struct {
 	Major, Minor int
 }
