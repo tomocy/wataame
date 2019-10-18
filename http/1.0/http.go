@@ -164,6 +164,11 @@ type FullResponse struct {
 
 func (r *FullResponse) response() {}
 
+func (r *FullResponse) WriteTo(dst io.Writer) (int64, error) {
+	n, err := fmt.Fprint(dst, r)
+	return int64(n), err
+}
+
 func (r FullResponse) String() string {
 	var b strings.Builder
 	fmt.Fprintln(&b, r.StatusLine)
