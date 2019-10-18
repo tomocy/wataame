@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/tomocy/wataame/http"
@@ -315,6 +316,15 @@ func (h Header) assureRequired() {
 
 		h[k] = vs
 	}
+}
+
+func (h Header) contentLength() int {
+	var n int
+	if ls, ok := h["Content-Length"]; ok {
+		n, _ = strconv.Atoi(ls[0])
+	}
+
+	return n
 }
 
 var requiredHeader = Header{
