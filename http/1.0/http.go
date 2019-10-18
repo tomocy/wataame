@@ -173,7 +173,9 @@ func (r *FullResponse) WriteTo(dst io.Writer) (int64, error) {
 func (r FullResponse) String() string {
 	var b strings.Builder
 	fmt.Fprintln(&b, r.StatusLine)
-	fmt.Fprintln(&b, r.Header)
+	if 0 < len(r.Header) {
+		fmt.Fprintln(&b, r.Header)
+	}
 	fmt.Fprintln(&b)
 	if r.Body != nil {
 		teed := r.teeBody()
@@ -516,11 +518,13 @@ func willBeEOF(s io.RuneScanner) bool {
 
 type body struct {
 	bytes.Buffer
+	size int
 }
 
 func (b *body) Scan(state fmt.ScanState, _ rune) error {
-	for {
-		read, _, err := state.ReadRune()
+	for i := 0; i < b.size; {
+		read, n, err := state.ReadRune()
+		i += n
 		if err != nil {
 			if err == io.EOF {
 				break
