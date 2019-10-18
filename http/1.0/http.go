@@ -117,8 +117,10 @@ func (r *FullRequest) Scan(state fmt.ScanState, _ rune) error {
 		return fmt.Errorf("failed to scan full request: %s", err)
 	}
 	if !willBeEOF(state) {
-		r.Body = new(body)
-		if _, err := fmt.Fscan(io.LimitReader(state, int64(r.Header.contentLength())), r.Body); err != nil {
+		r.Body = &body{
+			size: r.Header.contentLength(),
+		}
+		if _, err := fmt.Fscan(state, r.Body); err != nil {
 			return fmt.Errorf("failed to scan full request: %s", err)
 		}
 	}
