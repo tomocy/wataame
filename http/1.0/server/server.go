@@ -69,6 +69,8 @@ func (s *Server) handle(conn net.Conn) {
 	switch v {
 	case "0.9":
 		s.handleSimpleRequest(peekable)
+	case "1.0":
+		s.handleFullRequest(peekable)
 	default:
 		panic(fmt.Sprintf("failed to handle: unsupported HTTP version: %s", v))
 	}
@@ -92,6 +94,33 @@ func (s *Server) handleSimpleRequest(conn net.Conn) {
 	s.Handler.HandleSimpleRequest(resp, req)
 
 	resp.WriteTo(conn)
+}
+
+func (s *Server) handleFullRequest(conn net.Conn) {
+	defer conn.Close()
+
+	if s.Handler == nil {
+		fmt.Fprintln(conn, "failed to handle full request: handler is not set")
+		return
+	}
+
+	req := new(http1_0.FullRequest)
+	if _, err := req.ReadFrom(conn); err != nil {
+		fmt.Fprintf(conn, "failed to handle full request: %s", err)
+		return
+	}
+
+	resp := new(http1_0.FullResponse)
+	s.Handler.HandleFullRequest(resp, req)
+
+	assureFullResponse(resp)
+	resp.WriteTo(conn)
+}
+
+func assureFullResponse(r *http1_0.FullResponse) {
+	r.StatusLine.Version = &http1_0.Version{
+		Major: 1, Minor: 0,
+	}
 }
 
 type Handler interface {
