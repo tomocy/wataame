@@ -1,4 +1,4 @@
-package server
+package http_test
 
 import (
 	"context"
@@ -10,13 +10,14 @@ import (
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	"github.com/tomocy/wataame/http/0.9/client"
+	"github.com/tomocy/wataame/http/0.9/server"
 )
 
-func TestServer_ListenAndServe(t *testing.T) {
+func TestServerClient(t *testing.T) {
 	addr := "localhost:1234"
 	var client client.Client
-	s := &Server{
-		Addr: addr, Handler: HandlerFunc(func(w io.Writer, r *http0_9.Request) {
+	s := &server.Server{
+		Addr: addr, Handler: server.HandlerFunc(func(w io.Writer, r *http0_9.Request) {
 			if r.URI.Path != "/index.html" {
 				fmt.Fprint(w, "not found")
 				return
