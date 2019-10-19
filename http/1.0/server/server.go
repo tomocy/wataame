@@ -10,8 +10,9 @@ import (
 )
 
 type Server struct {
-	Addr    string
-	Handler Handler
+	Addr     string
+	Listener net.Listener
+	Handler  Handler
 }
 
 func (s *Server) ListenAndServe() error {
