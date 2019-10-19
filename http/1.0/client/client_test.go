@@ -35,7 +35,9 @@ func testClientDoSimpleRequest(t *testing.T) {
 			},
 		},
 	}
-	go serv.ListenAndServe()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go serv.ListenAndServe(ctx)
 
 	input := &http1_0.SimpleRequest{
 		Request: http0_9.Request{
@@ -92,7 +94,9 @@ func testClientDoFullRequest(t *testing.T) {
 			},
 		},
 	}
-	go serv.ListenAndServe()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go serv.ListenAndServe(ctx)
 
 	input := &http1_0.FullRequest{
 		RequestLine: &http1_0.RequestLine{

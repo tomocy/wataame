@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -15,43 +16,69 @@ type Server struct {
 	Handler  Handler
 }
 
-func (s *Server) ListenAndServe() error {
-	l, err := s.listen()
-	if err != nil {
-		return fmt.Errorf("failed to listen and serve: %s", err)
+func (s *Server) ListenAndServe(ctx context.Context) error {
+	if s.Listener == nil {
+		if err := s.listen(); err != nil {
+			return fmt.Errorf("failed to listen and serve: %s", err)
+		}
 	}
-	defer l.Close()
+	defer s.Listener.Close()
 
-	if err := s.Serve(l); err != nil {
+	if err := s.Serve(ctx); err != nil {
 		return fmt.Errorf("failed to listen and serve: %s", err)
 	}
 
 	return nil
 }
 
-func (s *Server) listen() (net.Listener, error) {
+func (s *Server) listen() error {
 	compensated, err := ip.Addr(s.Addr).Compensate()
 	if err != nil {
-		return nil, fmt.Errorf("failed to listen: %s", err)
+		return fmt.Errorf("failed to listen: %s", err)
 	}
 
 	l, err := net.Listen("tcp", compensated)
 	if err != nil {
-		return nil, fmt.Errorf("failed to listen: %s", err)
+		return fmt.Errorf("failed to listen: %s", err)
 	}
+	s.Listener = l
 
-	return l, nil
+	return nil
 }
 
-func (s *Server) Serve(l net.Listener) error {
+func (s *Server) Serve(ctx context.Context) error {
+	connCh, errCh := s.accept()
 	for {
-		conn, err := l.Accept()
-		if err != nil {
+		select {
+		case <-ctx.Done():
+			err := ctx.Err()
+			if err == context.Canceled {
+				return nil
+			}
+			return fmt.Errorf("failed to serve: %s", err)
+		case conn := <-connCh:
+			go s.handle(conn)
+		case err := <-errCh:
 			return fmt.Errorf("failed to serve: %s", err)
 		}
-
-		go s.handle(conn)
 	}
+}
+
+func (s *Server) accept() (<-chan net.Conn, <-chan error) {
+	connCh, errCh := make(chan net.Conn), make(chan error)
+	go func() {
+		for {
+			conn, err := s.Listener.Accept()
+			if err != nil {
+				errCh <- fmt.Errorf("failed to accept: %s", err)
+				continue
+			}
+
+			connCh <- conn
+		}
+	}()
+
+	return connCh, errCh
 }
 
 func (s *Server) handle(conn net.Conn) {

@@ -39,7 +39,9 @@ func testServerHandleSimpleRequest(t *testing.T) {
 			},
 		},
 	}
-	go serv.ListenAndServe()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go serv.ListenAndServe(ctx)
 
 	tests := map[string]struct {
 		input    http1_0.Request
