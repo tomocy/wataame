@@ -120,6 +120,7 @@ User-Agent: libwww/2.17b3
 		},
 		"POST method": {
 			input: `POST /index.html HTTP/1.0
+Content-Length: 21
 Content-Type: application/x-www-form-urlencoded
 
 name=foo&password=bar`,
@@ -128,7 +129,8 @@ name=foo&password=bar`,
 					Method: MethodPost, URI: uri, Version: &Version{Major: 1, Minor: 0},
 				},
 				Header: Header{
-					"Content-Type": []string{"application/x-www-form-urlencoded"},
+					"Content-Length": []string{"21"},
+					"Content-Type":   []string{"application/x-www-form-urlencoded"},
 				},
 				Body: ioutil.NopCloser(strings.NewReader(url.Values{
 					"name": []string{"foo"}, "password": []string{"bar"},
