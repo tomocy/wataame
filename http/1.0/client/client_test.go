@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"io/ioutil"
-	"log"
 	"net/url"
 	"strings"
 	"testing"
@@ -114,9 +113,7 @@ func testClientDoFullRequest(t *testing.T) {
 	if !ok {
 		t.Fatalf("unexpected type of Response from (*Clinet): got %T, expect *SimpleResponse\n", resp)
 	}
-	log.Println(1111111111111)
 	if actual.String() != expected {
-		log.Println(11111111111111)
 		t.Errorf("unexpected Response from (*Client).Do: got %q, expect %q\n", actual, expected)
 	}
 }
