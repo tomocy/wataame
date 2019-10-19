@@ -13,7 +13,7 @@ import (
 	"github.com/tomocy/wataame/http/1.0/server"
 )
 
-func TestSimpleRequest(t *testing.T) {
+func TestServerClient_SimpleRequest(t *testing.T) {
 	addr := ":1234"
 	uri, _ := url.Parse("http://localhost" + addr + "/index.html")
 	var client client.Client
@@ -49,7 +49,7 @@ func TestSimpleRequest(t *testing.T) {
 	}
 }
 
-func TestFullRequest(t *testing.T) {
+func TestServerClient_FullRequest(t *testing.T) {
 	addr, path := ":1234", "/index.html"
 	uri, _ := url.Parse("http://localhost" + addr + path)
 	var client client.Client
