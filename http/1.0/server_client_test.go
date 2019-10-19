@@ -1,4 +1,4 @@
-package client
+package http_test
 
 import (
 	"context"
@@ -9,24 +9,14 @@ import (
 
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	http1_0 "github.com/tomocy/wataame/http/1.0"
+	"github.com/tomocy/wataame/http/1.0/client"
 	"github.com/tomocy/wataame/http/1.0/server"
 )
 
-func TestClient_Do(t *testing.T) {
-	testers := map[string]func(t *testing.T){
-		// "simple request": testClientDoSimpleRequest,
-		"full request": testClientDoFullRequest,
-	}
-
-	for name, tester := range testers {
-		t.Run(name, tester)
-	}
-}
-
-func testClientDoSimpleRequest(t *testing.T) {
+func TestSimpleRequest(t *testing.T) {
 	addr := ":1234"
 	uri, _ := url.Parse("http://localhost" + addr + "/index.html")
-	var client Client
+	var client client.Client
 	serv := &server.Server{
 		Addr: addr,
 		Handler: server.HandlerFunc{
@@ -59,10 +49,10 @@ func testClientDoSimpleRequest(t *testing.T) {
 	}
 }
 
-func testClientDoFullRequest(t *testing.T) {
+func TestFullRequest(t *testing.T) {
 	addr, path := ":1234", "/index.html"
 	uri, _ := url.Parse("http://localhost" + addr + path)
-	var client Client
+	var client client.Client
 	serv := &server.Server{
 		Addr: addr,
 		Handler: server.HandlerFunc{
