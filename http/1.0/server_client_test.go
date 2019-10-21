@@ -10,7 +10,7 @@ import (
 	http0_9 "github.com/tomocy/wataame/http/0.9"
 	client0_9 "github.com/tomocy/wataame/http/0.9/client"
 	http1_0 "github.com/tomocy/wataame/http/1.0"
-	"github.com/tomocy/wataame/http/1.0/client"
+	client1_0 "github.com/tomocy/wataame/http/1.0/client"
 	"github.com/tomocy/wataame/http/1.0/server"
 )
 
@@ -47,7 +47,7 @@ func TestServerClient_SimpleRequest(t *testing.T) {
 func TestServerClient_FullRequest(t *testing.T) {
 	addr, path := ":1234", "/index.html"
 	uri, _ := url.Parse("http://localhost" + addr + path)
-	var client client.Client
+	var client client1_0.Client
 	serv := &server.Server{
 		Addr: addr,
 		Handler: server.HandlerFunc{
