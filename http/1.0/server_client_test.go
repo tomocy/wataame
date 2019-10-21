@@ -94,13 +94,9 @@ func TestServerClient_FullRequest(t *testing.T) {
 	}
 	expected := "HTTP/1.0 201 Created\n\n"
 
-	resp, err := client.Do(context.Background(), input)
+	actual, err := client.Do(context.Background(), input)
 	if err != nil {
 		t.Fatalf("unexpected error from (*Client).Do: got %s, expect nil\n", err)
-	}
-	actual, ok := resp.(*http1_0.FullResponse)
-	if !ok {
-		t.Fatalf("unexpected type of Response from (*Clinet): got %T, expect *SimpleResponse\n", resp)
 	}
 	if actual.String() != expected {
 		t.Errorf("unexpected Response from (*Client).Do: got %q, expect %q\n", actual, expected)
