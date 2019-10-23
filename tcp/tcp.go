@@ -11,6 +11,10 @@ type Listener interface {
 	Close() error
 }
 
+type GoListener struct {
+	net.TCPListener
+}
+
 type Dialer interface {
 	Dial(ctx context.Context, addr string) (net.Conn, error)
 }
