@@ -8,11 +8,12 @@ import (
 	"github.com/tomocy/wataame/http"
 	http1_0 "github.com/tomocy/wataame/http/1.0"
 	"github.com/tomocy/wataame/ip"
+	"github.com/tomocy/wataame/tcp"
 )
 
 type Server struct {
 	Addr     string
-	Listener net.Listener
+	Listener tcp.Listener
 	Handler  Handler
 }
 
@@ -37,7 +38,7 @@ func (s *Server) listen() error {
 		return fmt.Errorf("failed to listen: %s", err)
 	}
 
-	l, err := net.Listen("tcp", compensated)
+	l, err := tcp.Listen(compensated)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %s", err)
 	}
@@ -47,46 +48,17 @@ func (s *Server) listen() error {
 }
 
 func (s *Server) Serve(ctx context.Context) error {
-	connCh, errCh := s.accept(ctx)
 	for {
-		select {
-		case conn := <-connCh:
-			go s.handle(conn)
-		case err := <-errCh:
+		conn, err := s.Listener.Accept(ctx)
+		if err != nil {
 			if err == context.Canceled {
-				return nil
+				err = nil
 			}
-			return fmt.Errorf("failed to serve: %s", err)
+			return err
 		}
+
+		go s.handle(conn)
 	}
-}
-
-func (s *Server) accept(ctx context.Context) (<-chan net.Conn, <-chan error) {
-	connCh, errCh := make(chan net.Conn), make(chan error)
-	go func() {
-		defer func() {
-			close(connCh)
-			close(errCh)
-		}()
-		defer s.Listener.Close()
-
-		go func() {
-			<-ctx.Done()
-			errCh <- ctx.Err()
-		}()
-
-		for {
-			conn, err := s.Listener.Accept()
-			if err != nil {
-				errCh <- fmt.Errorf("failed to accept: %s", err)
-				continue
-			}
-
-			connCh <- conn
-		}
-	}()
-
-	return connCh, errCh
 }
 
 func (s *Server) handle(conn net.Conn) {
