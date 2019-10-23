@@ -67,6 +67,11 @@ func (s *Server) Serve(ctx context.Context) error {
 func (s *Server) accept() (<-chan net.Conn, <-chan error) {
 	connCh, errCh := make(chan net.Conn), make(chan error)
 	go func() {
+		defer func() {
+			close(connCh)
+			close(errCh)
+		}()
+
 		for {
 			conn, err := s.Listener.Accept()
 			if err != nil {
