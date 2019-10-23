@@ -5,6 +5,21 @@ import (
 	"net"
 )
 
+func Listen(addr string) (Listener, error) {
+	resolved, err := net.ResolveTCPAddr("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+	l, err := net.ListenTCP("tcp", resolved)
+	if err != nil {
+		return nil, err
+	}
+
+	return &GoListener{
+		TCPListener: *l,
+	}, nil
+}
+
 type Listener interface {
 	Addr() net.Addr
 	Accept(context.Context) (net.Conn, error)
@@ -16,7 +31,7 @@ type GoListener struct {
 }
 
 func (l *GoListener) Accept(ctx context.Context) (net.Conn, error) {
-	connCh, errCh := l.acceptAsnycly()
+	connCh, errCh := l.accept()
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -27,7 +42,7 @@ func (l *GoListener) Accept(ctx context.Context) (net.Conn, error) {
 	}
 }
 
-func (l *GoListener) acceptAsnycly() (<-chan net.Conn, <-chan error) {
+func (l *GoListener) accept() (<-chan net.Conn, <-chan error) {
 	connCh, errCh := make(chan net.Conn), make(chan error)
 	go func() {
 		defer func() {
