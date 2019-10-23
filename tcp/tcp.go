@@ -5,6 +5,12 @@ import (
 	"net"
 )
 
+type Listener interface {
+	Addr() net.Addr
+	Accept(context.Context) (net.Conn, error)
+	Close() error
+}
+
 type Dialer interface {
 	Dial(ctx context.Context, addr string) (net.Conn, error)
 }
